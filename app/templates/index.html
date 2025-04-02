@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelado 3D Personal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">Modelado 3D Personal</h1>
+        
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                    Altura (cm):
+                </label>
+                <input type="number" id="height" class="w-full px-3 py-2 border rounded-lg" required>
+            </div>
+
+            <div class="mb-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Frente</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 cursor-pointer">
+                            <input type="file" id="front" class="hidden" accept="image/*" capture="environment">
+                            <div id="front-preview" class="w-full h-32 bg-gray-100 flex items-center justify-center">
+                                <span class="text-gray-500">Toca para capturar</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Derecha</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 cursor-pointer">
+                            <input type="file" id="right" class="hidden" accept="image/*" capture="environment">
+                            <div id="right-preview" class="w-full h-32 bg-gray-100 flex items-center justify-center">
+                                <span class="text-gray-500">Toca para capturar</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Atrás</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 cursor-pointer">
+                            <input type="file" id="back" class="hidden" accept="image/*" capture="environment">
+                            <div id="back-preview" class="w-full h-32 bg-gray-100 flex items-center justify-center">
+                                <span class="text-gray-500">Toca para capturar</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Izquierda</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 cursor-pointer">
+                            <input type="file" id="left" class="hidden" accept="image/*" capture="environment">
+                            <div id="left-preview" class="w-full h-32 bg-gray-100 flex items-center justify-center">
+                                <span class="text-gray-500">Toca para capturar</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="process" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 disabled:bg-gray-400" disabled>
+                Procesar Imágenes
+            </button>
+
+            <div id="result" class="mt-6 hidden">
+                <h3 class="text-lg font-bold mb-2">Resultados:</h3>
+                <div id="measurements" class="space-y-2"></div>
+                <div id="model-viewer" class="mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const imageInputs = ['front', 'right', 'back', 'left'];
+        const uploadedImages = {};
+
+        // Configurar los listeners para cada input de imagen
+        imageInputs.forEach(id => {
+            const input = document.getElementById(id);
+            const preview = document.getElementById(`${id}-preview`);
+            const container = input.parentElement;
+
+            container.addEventListener('click', () => input.click());
+
+            input.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Mostrar preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.innerHTML = `<img src="${e.target.result}" class="h-full w-full object-contain">`;
+                };
+                reader.readAsDataURL(file);
+
+                // Subir imagen
+                const formData = new FormData();
+                formData.append('image', file);
+
+                try {
+                    const response = await fetch('/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        uploadedImages[id] = data.url;
+                        checkProcessButton();
+                    }
+                } catch (error) {
+                    console.error('Error al subir imagen:', error);
+                }
+            });
+        });
+
+        // Habilitar/deshabilitar botón de procesar
+        function checkProcessButton() {
+            const heightValue = document.getElementById('height').value;
+            const allImagesUploaded = imageInputs.every(id => uploadedImages[id]);
+            document.getElementById('process').disabled = !(heightValue && allImagesUploaded);
+        }
+
+        document.getElementById('height').addEventListener('input', checkProcessButton);
+
+        // Procesar imágenes
+        document.getElementById('process').addEventListener('click', async () => {
+            const height = document.getElementById('height').value;
+            
+            try {
+                const response = await fetch('/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        images: Object.values(uploadedImages),
+                        height: parseFloat(height)
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    const measurementsDiv = document.getElementById('measurements');
+                    measurementsDiv.innerHTML = Object.entries(data.measurements)
+                        .map(([key, value]) => `<p><strong>${key}:</strong> ${value} cm</p>`)
+                        .join('');
+                    
+                    document.getElementById('result').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error al procesar imágenes:', error);
+            }
+        });
+    </script>
+</body>
+</html> 
