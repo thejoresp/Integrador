@@ -74,6 +74,7 @@
     <script>
         const imageInputs = ['front', 'right', 'back', 'left'];
         const uploadedImages = {};
+        let sessionId = null;
 
         // Configurar los listeners para cada input de imagen
         imageInputs.forEach(id => {
@@ -97,6 +98,11 @@
                 // Subir imagen
                 const formData = new FormData();
                 formData.append('image', file);
+                
+                // Añadir session_id si existe
+                if (sessionId) {
+                    formData.append('session_id', sessionId);
+                }
 
                 try {
                     const response = await fetch('/upload', {
@@ -106,6 +112,10 @@
                     const data = await response.json();
                     if (data.success) {
                         uploadedImages[id] = data.url;
+                        // Guardar session_id para futuras cargas
+                        if (!sessionId) {
+                            sessionId = data.session_id;
+                        }
                         checkProcessButton();
                     }
                 } catch (error) {
@@ -135,7 +145,8 @@
                     },
                     body: JSON.stringify({
                         images: Object.values(uploadedImages),
-                        height: parseFloat(height)
+                        height: parseFloat(height),
+                        session_id: sessionId
                     })
                 });
 
@@ -143,7 +154,7 @@
                 if (data.success) {
                     const measurementsDiv = document.getElementById('measurements');
                     measurementsDiv.innerHTML = Object.entries(data.measurements)
-                        .map(([key, value]) => `<p><strong>${key}:</strong> ${value} cm</p>`)
+                        .map(([key, value]) => `<p><strong>${key}:</strong> ${value.toFixed(1)} cm</p>`)
                         .join('');
                     
                     document.getElementById('result').classList.remove('hidden');
@@ -154,4 +165,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
