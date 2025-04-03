@@ -16,7 +16,7 @@ Esta aplicación web permite crear modelos 3D de personas utilizando imágenes c
 ## Requisitos
 
 - Python 3.12+ (recomendado)
-- Cuenta AWS
+- Cuenta AWS.
 
 ## Configuración
 
