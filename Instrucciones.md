@@ -11,7 +11,7 @@ Esta aplicación web permite crear modelos 3D de personas utilizando imágenes c
 - Cálculo de dimensiones basado en altura conocida
 - Optimizaciones para aprovechar al máximo la capa gratuita de AWS
 =======
-- Cálculo de dimensiones basado en altura conocida.
+- Cálculo de dimensiones basado en altura conocida
 >>>>>>> Stashed changes
 
 ## Requisitos
