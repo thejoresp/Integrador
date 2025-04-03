@@ -4,7 +4,6 @@ Esta aplicación web permite crear modelos 3D de personas utilizando imágenes c
 
 ## Características
 
-- Captura de imágenes desde iPhone 14 Pro
 - Procesamiento de imágenes en calidad original
 - Generación de modelo 3D basado en 4 vistas (frente, atrás, izquierda, derecha)
 <<<<<<< Updated upstream
@@ -18,7 +17,6 @@ Esta aplicación web permite crear modelos 3D de personas utilizando imágenes c
 
 - Python 3.12+ (recomendado)
 - Cuenta AWS
-- iPhone 14 Pro para captura de imágenes
 
 ## Configuración
 
