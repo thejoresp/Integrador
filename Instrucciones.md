@@ -79,7 +79,7 @@ app/
 ├── main.py         # Punto de entrada de la aplicación FastAPI
 ├── routes.py       # Rutas y endpoints de la API
 └── config.py       # Configuración de la aplicación
-```
+``
 
 ## Optimizaciones para AWS (Capa Gratuita)
 
