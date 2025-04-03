@@ -7,8 +7,12 @@ Esta aplicación web permite crear modelos 3D de personas utilizando imágenes c
 - Captura de imágenes desde iPhone 14 Pro
 - Procesamiento de imágenes en calidad original
 - Generación de modelo 3D basado en 4 vistas (frente, atrás, izquierda, derecha)
+<<<<<<< Updated upstream
 - Cálculo de dimensiones basado en altura conocida
 - Optimizaciones para aprovechar al máximo la capa gratuita de AWS
+=======
+- Cálculo de dimensiones basado en altura conocida.
+>>>>>>> Stashed changes
 
 ## Requisitos
 
