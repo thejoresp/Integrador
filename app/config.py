@@ -1,8 +1,43 @@
 import os
+import logging
 from dotenv import load_dotenv
 from typing import Set, Tuple, Any
+from pathlib import Path
 
 load_dotenv()
+
+# Configuración base
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+
+# Asegurar que existan los directorios necesarios
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# Modelos y rutas de archivos pre-entrenados
+MODEL_DIR = os.path.join(BASE_DIR, "models", "pretrained")
+os.makedirs(MODEL_DIR, exist_ok=True)
+
+# Configuración de AWS
+AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+S3_BUCKET = os.getenv("S3_BUCKET", "face-analyzer-bucket")
+
+# Configuración de modelos
+MODELS_DIR = os.path.join(BASE_DIR, "app", "models")
+
+# Configuración de logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+
+def ensure_upload_dir():
+    """Asegura que exista el directorio de uploads"""
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    os.makedirs(MODELS_DIR, exist_ok=True)
 
 class Config:
     SECRET_KEY: str = os.getenv('SECRET_KEY', 'dev-key-change-in-production')
@@ -42,4 +77,19 @@ class Config:
     
     @property
     def is_production(self) -> bool:
-        return self.ENV_MODE == 'production' 
+        return self.ENV_MODE == 'production'
+
+# Configuración de AWS
+AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
+AWS_S3_BUCKET = os.environ.get("AWS_S3_BUCKET", "facial-analysis-app")
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", "")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", "")
+
+# Configuración de la app
+MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
+ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png"}
+
+# Configuraciones de modelos específicos
+FACE_DETECTION_MODEL = "mediapipe"  # Alternativas: 'dlib', 'opencv'
+AGE_GENDER_MODEL = "deepface"       # Alternativas: 'insightface'
+EMOTION_MODEL = "deepface"          # Alternativas: 'fer'

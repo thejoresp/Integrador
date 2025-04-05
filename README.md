@@ -1,107 +1,90 @@
-# Modelado 3D desde Imágenes de iPhone
+# Analizador Facial con FastAPI
 
-Esta aplicación web permite crear modelos 3D de personas utilizando imágenes capturadas desde un iPhone 14 Pro.
+PrompCara es una aplicación web que utiliza FastAPI para analizar rostros mediante técnicas de visión por computadora y deep learning. Proporciona información detallada sobre diversos aspectos faciales como piel, emociones, edad aparente, y más.
 
 ## Características
 
-- Procesamiento de imágenes en calidad original
-- Generación de modelo 3D basado en 4 vistas (frente, atrás, izquierda, derecha)
-<<<<<<< Updated upstream
-- Cálculo de dimensiones basado en altura conocida
-- Optimizaciones para aprovechar al máximo la capa gratuita de AWS
-=======
-- Cálculo de dimensiones basado en altura conocida
->>>>>>> Stashed changes
+- Análisis de estado de la piel (hidratación, textura, poros)
+- Detección de emociones faciales
+- Estimación de edad y género aparente
+- Análisis de simetría facial
+- Detección de fatiga ocular
+- Análisis de salud basado en características faciales
+- Interfaz web sencilla para subir imágenes y visualizar resultados
 
 ## Requisitos
 
-- Python 3.12+ (recomendado)
-- Cuenta AWS.
+- Python 3.8+
+- FastAPI
+- OpenCV
+- NumPy
+- Boto3 (para integración con AWS S3)
+- Otras dependencias listadas en `requirements.txt`
 
 ## Configuración
 
-1. Crear entorno virtual:
+1. Clona este repositorio:
 ```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-.\venv\Scripts\activate   # Windows
+git clone <repo-url>
+cd PrompCara
 ```
 
-2. Instalar dependencias:
+2. Crea un entorno virtual y actívalo:
+```bash
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+```
+
+3. Instala las dependencias:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Configurar variables de entorno:
-Crear archivo `.env` basado en `.env.example` con:
-```
-# Credenciales de AWS (reemplazar con tus propias credenciales)
-AWS_ACCESS_KEY_ID=tu_access_key
-AWS_SECRET_ACCESS_KEY=tu_secret_key
-AWS_REGION=us-east-1
-S3_BUCKET=nombre_del_bucket
-
-# Configuración de seguridad
-SECRET_KEY=clave_secreta_segura_para_produccion
-MAINTENANCE_TOKEN=token_seguro_para_tareas_mantenimiento
-
-# Configuración de FastAPI
-FASTAPI_ENV=development
-FASTAPI_APP=app.main:app
-FASTAPI_HOST=0.0.0.0
-FASTAPI_PORT=8080
-
-# Optimizaciones para capa gratuita de AWS
-IMG_COMPRESSION_QUALITY=85
-S3_AUTO_CLEANUP_ENABLED=TRUE
-S3_AUTO_CLEANUP_DAYS=30
-S3_REDUCED_REDUNDANCY=TRUE
-
-# Modo de bajo consumo de recursos
-LOW_RESOURCE_MODE=TRUE
-```
-
-## Uso
-
-1. Iniciar el servidor:
+4. Configura las variables de entorno para AWS (opcional si usas S3):
 ```bash
-python run.py
+export AWS_ACCESS_KEY_ID=tu_access_key
+export AWS_SECRET_ACCESS_KEY=tu_secret_key
+export S3_BUCKET=nombre_de_tu_bucket
 ```
 
-2. Acceder a la aplicación web en `http://localhost:8080`
-3. Seguir las instrucciones en pantalla para la captura de imágenes
+## Ejecución
+
+Para iniciar la aplicación en modo desarrollo:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+La aplicación estará disponible en `http://localhost:8000`
 
 ## Estructura del Proyecto
 
+- `app/` - Código principal de la aplicación
+  - `main.py` - Punto de entrada de FastAPI
+  - `analyzers/` - Módulos para análisis facial
+  - `aws/` - Integración con servicios AWS
+  - `schemas/` - Modelos Pydantic
+  - `utils/` - Utilidades para procesamiento
+- `static/` - Archivos estáticos (CSS, JS)
+- `templates/` - Plantillas HTML
+- `uploads/` - Directorio temporal para imágenes subidas
+
+## Despliegue
+
+Para desplegar en AWS:
+
+1. Crea una instancia EC2 t2.micro (capa gratuita)
+2. Configura un bucket S3 para almacenamiento
+3. Configura las variables de entorno necesarias
+4. Instala las dependencias y ejecuta la aplicación con Gunicorn:
+
+```bash
+gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app
 ```
-app/
-├── static/          # Archivos estáticos
-├── templates/       # Plantillas HTML
-├── __init__.py     # Archivo de inicialización del paquete
-├── main.py         # Punto de entrada de la aplicación FastAPI
-├── routes.py       # Rutas y endpoints de la API
-└── config.py       # Configuración de la aplicación
-```
 
-## Optimizaciones para AWS (Capa Gratuita)
+## Desarrollo Futuro
 
-La aplicación incluye varias optimizaciones para aprovechar al máximo la capa gratuita de AWS:
-
-1. **Compresión de imágenes**: Las imágenes JPEG se comprimen antes de subirse a S3, manteniendo la resolución pero reduciendo el tamaño de archivo.
-
-2. **Estructura organizada**: Organización por sesiones y procesos para facilitar la limpieza.
-
-3. **Metadatos**: Añadimos metadatos con fechas para controlar la antigüedad de los archivos.
-
-4. **Limpieza automática**: Opción para eliminar archivos antiguos automáticamente, configurable por días.
-
-5. **Clase de almacenamiento**: Uso de `REDUCED_REDUNDANCY` para archivos temporales.
-
-6. **Modo de bajo consumo**: Opción para procesar imágenes a menor resolución.
-
-## Documentación de la API
-
-FastAPI genera automáticamente documentación interactiva de la API:
-
-- Swagger UI: `http://localhost:8080/docs`
-- ReDoc: `http://localhost:8080/redoc` 
+- Implementación de modelos más avanzados para detección de características
+- Soporte para análisis en tiempo real con cámara web
+- Generación de reportes descargables en PDF
+- Personalización de análisis según preferencias del usuario
