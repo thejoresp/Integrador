@@ -1,7 +1,20 @@
 import cv2
 import numpy as np
 from typing import Dict, Any
-import dlib
+
+# Cambiamos la importación para manejar tanto dlib como dlib-bin
+try:
+    import dlib
+    DLIB_AVAILABLE = True
+except ImportError:
+    try:
+        # Intentar importar desde dlib-bin si está disponible
+        import dlib_bin as dlib
+        DLIB_AVAILABLE = True
+    except ImportError:
+        DLIB_AVAILABLE = False
+        print("Ni dlib ni dlib-bin están disponibles. Usando método alternativo para análisis de simetría.")
+
 from app.services.image_processor import crop_face
 
 # Variable global para cargar el predictor de landmarks una sola vez
@@ -32,24 +45,24 @@ async def analyze_symmetry(image_path: str, face: Dict[str, Any]) -> Dict[str, A
         if face.get("landmarks") and len(face["landmarks"]) > 0:
             return await analyze_symmetry_from_landmarks(face_img, face["landmarks"])
         
-        # Si no hay landmarks, intentar detectarlos con dlib
-        try:
-            import dlib
-            if face_landmark_predictor is None:
-                predictor_path = dlib.get_frontal_face_detector()
-                face_landmark_predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-            
-            # Intentar detectar puntos faciales
-            detector = dlib.get_frontal_face_detector()
-            gray = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
-            rects = detector(gray, 1)
-            
-            if len(rects) > 0:
-                landmarks = face_landmark_predictor(gray, rects[0])
-                landmarks_dict = landmarks_to_dict(landmarks)
-                return await analyze_symmetry_from_landmarks(face_img, landmarks_dict)
-        except Exception as e:
-            print(f"Error al usar dlib: {str(e)}")
+        # Si no hay landmarks y dlib está disponible, intentar detectarlos
+        if DLIB_AVAILABLE:
+            try:
+                if face_landmark_predictor is None:
+                    predictor_path = dlib.get_frontal_face_detector()
+                    face_landmark_predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+                
+                # Intentar detectar puntos faciales
+                detector = dlib.get_frontal_face_detector()
+                gray = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
+                rects = detector(gray, 1)
+                
+                if len(rects) > 0:
+                    landmarks = face_landmark_predictor(gray, rects[0])
+                    landmarks_dict = landmarks_to_dict(landmarks)
+                    return await analyze_symmetry_from_landmarks(face_img, landmarks_dict)
+            except Exception as e:
+                print(f"Error al usar dlib/dlib-bin: {str(e)}")
         
         # Si no se pueden detectar landmarks, usar método alternativo basado en imagen
         return await analyze_symmetry_basic(face_img)

@@ -1,90 +1,122 @@
-# Analizador Facial con FastAPI
+# Sistema de Análisis Facial y Emocional
 
-PrompCara es una aplicación web que utiliza FastAPI para analizar rostros mediante técnicas de visión por computadora y deep learning. Proporciona información detallada sobre diversos aspectos faciales como piel, emociones, edad aparente, y más.
+Sistema de análisis facial y emocional que integra múltiples tecnologías para proporcionar análisis detallados de rostros en imágenes.
 
 ## Características
 
-- Análisis de estado de la piel (hidratación, textura, poros)
-- Detección de emociones faciales
-- Estimación de edad y género aparente
-- Análisis de simetría facial
-- Detección de fatiga ocular
-- Análisis de salud basado en características faciales
-- Interfaz web sencilla para subir imágenes y visualizar resultados
+- Detección facial avanzada
+- Análisis de edad y género
+- Análisis de emociones
+- Detección de accesorios (gafas, máscaras)
+- Integración con AWS S3
+- API RESTful con FastAPI
+- Interfaz web moderna
 
-## Requisitos
+## Requisitos del Sistema
 
-- Python 3.8+
-- FastAPI
-- OpenCV
-- NumPy
-- Boto3 (para integración con AWS S3)
-- Otras dependencias listadas en `requirements.txt`
-
-## Configuración
-
-1. Clona este repositorio:
+### Dependencias del Sistema
 ```bash
-git clone <repo-url>
-cd PrompCara
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install -y build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev
 ```
 
-2. Crea un entorno virtual y actívalo:
+### Python 3.9
+El proyecto está optimizado para Python 3.9. Se recomienda usar esta versión específica.
+
+## Instalación
+
+1. Clonar el repositorio:
 ```bash
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+git clone [URL_DEL_REPOSITORIO]
+cd [NOMBRE_DEL_DIRECTORIO]
 ```
 
-3. Instala las dependencias:
+2. Crear y activar entorno virtual:
 ```bash
+python3.9 -m venv venv
+source venv/bin/activate
+```
+
+3. Instalar dependencias:
+```bash
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-4. Configura las variables de entorno para AWS (opcional si usas S3):
+## Configuración
+
+1. Crear archivo `.env` en la raíz del proyecto:
 ```bash
-export AWS_ACCESS_KEY_ID=tu_access_key
-export AWS_SECRET_ACCESS_KEY=tu_secret_key
-export S3_BUCKET=nombre_de_tu_bucket
+cp .env.example .env
+```
+
+2. Configurar las variables de entorno en `.env`:
+```env
+AWS_ACCESS_KEY_ID=tu_access_key
+AWS_SECRET_ACCESS_KEY=tu_secret_key
+AWS_REGION=tu_region
+S3_BUCKET=nombre_del_bucket
 ```
 
 ## Ejecución
 
-Para iniciar la aplicación en modo desarrollo:
-
+1. Iniciar el servidor:
 ```bash
-uvicorn app.main:app --reload
+python run.py
 ```
 
-La aplicación estará disponible en `http://localhost:8000`
+El servidor estará disponible en:
+- API: http://localhost:8080
+- Documentación API: http://localhost:8080/docs
 
 ## Estructura del Proyecto
 
-- `app/` - Código principal de la aplicación
-  - `main.py` - Punto de entrada de FastAPI
-  - `analyzers/` - Módulos para análisis facial
-  - `aws/` - Integración con servicios AWS
-  - `schemas/` - Modelos Pydantic
-  - `utils/` - Utilidades para procesamiento
-- `static/` - Archivos estáticos (CSS, JS)
-- `templates/` - Plantillas HTML
-- `uploads/` - Directorio temporal para imágenes subidas
-
-## Despliegue
-
-Para desplegar en AWS:
-
-1. Crea una instancia EC2 t2.micro (capa gratuita)
-2. Configura un bucket S3 para almacenamiento
-3. Configura las variables de entorno necesarias
-4. Instala las dependencias y ejecuta la aplicación con Gunicorn:
-
-```bash
-gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app
+```
+.
+├── app/
+│   ├── api/
+│   ├── core/
+│   ├── models/
+│   ├── services/
+│   └── utils/
+├── tests/
+├── .env
+├── .env.example
+├── requirements.txt
+└── run.py
 ```
 
-## Desarrollo Futuro
+## Notas Importantes
 
-- Implementación de modelos más avanzados para detección de características
-- Soporte para análisis en tiempo real con cámara web
-- Generación de reportes descargables en PDF
-- Personalización de análisis según preferencias del usuario
+- El sistema utiliza CPU para el procesamiento de TensorFlow. Los mensajes sobre CUDA son normales si no tienes una GPU NVIDIA.
+- DeepFace se ha reemplazado por alternativas más robustas para el análisis de edad, género y emociones.
+- La aplicación está optimizada para ejecutarse en modo desarrollo con recarga automática.
+
+## Tecnologías Principales
+
+- FastAPI: Framework web moderno y rápido
+- TensorFlow: Motor de inferencia para modelos de ML
+- OpenCV: Procesamiento de imágenes
+- MediaPipe: Detección facial y análisis
+- Boto3: Integración con AWS S3
+- Pydantic: Validación de datos
+- Uvicorn: Servidor ASGI
+
+## Desarrollo
+
+Para desarrollo local:
+```bash
+# Activar entorno virtual
+source venv/bin/activate
+
+# Instalar dependencias de desarrollo
+pip install -r requirements-dev.txt
+
+# Ejecutar tests
+pytest
+```
+
+## Licencia
+
+[Especificar la licencia]

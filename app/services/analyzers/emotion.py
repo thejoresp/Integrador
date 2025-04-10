@@ -5,7 +5,7 @@ from typing import Dict, Any
 from app.config import EMOTION_MODEL
 from app.services.image_processor import preprocess_image, crop_face
 
-# Intentar importar deepface con manejo de errores
+# Manejo más robusto de importaciones para la compatibilidad con Python 3.12
 try:
     from deepface import DeepFace
     DEEPFACE_AVAILABLE = True
@@ -56,13 +56,24 @@ async def _analyze_with_deepface(image_path: str, face: Dict[str, Any]) -> Dict[
         import cv2
         cv2.imwrite(temp_path, face_img)
         
-        # Analizar con DeepFace
-        results = DeepFace.analyze(
-            img_path=temp_path,
-            actions=['emotion'],
-            enforce_detection=False,
-            detector_backend="opencv"
-        )
+        # Analizar con DeepFace y manejar las nuevas APIs de versiones recientes
+        try:
+            # DeepFace ≥ 0.0.75
+            results = DeepFace.analyze(
+                img_path=temp_path,
+                actions=['emotion'],
+                enforce_detection=False,
+                detector_backend="opencv"
+            )
+        except TypeError:
+            # DeepFace versiones anteriores o con cambios en la API
+            results = DeepFace.analyze(
+                img_path=temp_path,
+                actions=['emotion'],
+                enforce_detection=False,
+                detector_backend="opencv",
+                prog_bar=False  # Parámetro agregado en versiones recientes
+            )
         
         # Limpiar archivo temporal
         if os.path.exists(temp_path):
