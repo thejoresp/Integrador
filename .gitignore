@@ -1,1 +1,4 @@
+# entorno virtual
 .venv
+# conf de archivos de privacidad
+.env
