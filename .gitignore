@@ -1,3 +1,69 @@
-# entorno virtual
-venv
+# Entornos virtuales
+venv/
+env/
+.env/
+.venv/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+installs/
+lib/
+lib64/
+wheels/
+*.egg-info/
+
+# Archivos de configuración local
 .env
+config.yaml
+config.local.yaml
+
+# IDEs y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Caché
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Archivos temporales
+tmp/
+temp/
+
+# Bases de datos
+*.db
+*.sqlite3
+
+# Modelos y datos
+models/
+data/
+uploads/
+
+# Certificados y claves
+*.pem
+*.key
+*.crt
+
+# Archivos específicos del proyecto
+app/models/
+app/data/
+app/uploads/
