@@ -1,21 +1,25 @@
-import os
-import uuid
-from typing import List
-from fastapi import FastAPI, Request, UploadFile, File, HTTPException, Depends
+"""
+Punto de entrada principal de la aplicación de análisis facial.
+
+Este módulo configura la aplicación FastAPI e implementa el patrón MVC
+(Modelo-Vista-Controlador) para la estructura general del proyecto.
+"""
+import uvicorn
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import STATIC_DIR, TEMPLATE_DIR, UPLOAD_DIR, ensure_upload_dir
+from app.config import (
+    STATIC_DIR, 
+    TEMPLATE_DIR, 
+    UPLOAD_DIR,
+    config, 
+    ensure_dirs,
+    logger
+)
 from app.routers import analysis
-from app.aws.s3 import upload_file, get_file_url
-from app.analyzers.skin import SkinAnalyzer
-from app.analyzers.emotion import EmotionAnalyzer
-from app.analyzers.age_gender import AgeGenderAnalyzer
-from app.analyzers.health import HealthAnalyzer
-from app.schemas.response import FaceAnalysisResponse
-from app.utils.image import validate_image, process_image
+from app.dependencies import get_analyzers
+from app.views.facial_analysis_view import FacialAnalysisView
 
 # Crear la aplicación FastAPI
 app = FastAPI(
@@ -35,87 +39,80 @@ app.add_middleware(
 
 # Montar archivos estáticos
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
-# Configurar plantillas
-templates = Jinja2Templates(directory=TEMPLATE_DIR)
-
-# Inicializar analizadores
-skin_analyzer = SkinAnalyzer()
-emotion_analyzer = EmotionAnalyzer()
-age_gender_analyzer = AgeGenderAnalyzer()
-health_analyzer = HealthAnalyzer()
+# Inicializar vista
+facial_analysis_view = FacialAnalysisView()
 
 @app.on_event("startup")
-async def startup():
-    ensure_upload_dir()
+async def startup_event():
+    """
+    Función ejecutada al iniciar la aplicación.
+    Prepara directorios y recursos necesarios.
+    """
+    # Asegurar que existan los directorios necesarios
+    ensure_dirs()
+    
+    # Log de modo de la aplicación
+    if config.is_production:
+        logger.info("Ejecutando en modo PRODUCCIÓN")
+    else:
+        logger.info("Ejecutando en modo DESARROLLO")
 
 # Registrar routers
 app.include_router(analysis.router)
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    """
+    Ruta principal que muestra la interfaz de usuario.
+    
+    Args:
+        request: Objeto de solicitud HTTP
+        
+    Returns:
+        Plantilla HTML renderizada usando la vista (patrón MVC)
+    """
+    return facial_analysis_view.render_index_page(request)
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok", "message": "El servicio está funcionando correctamente"}
+    """
+    Endpoint para verificar la salud del servicio.
+    
+    Returns:
+        Dict: Estado y mensaje del servicio
+    """
+    return {
+        "status": "ok", 
+        "message": "El servicio está funcionando correctamente",
+        "environment": config.env_mode
+    }
 
-@app.post("/analyze", response_model=FaceAnalysisResponse)
-async def analyze_face(file: UploadFile = File(...)):
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
     """
-    Analiza una imagen facial y devuelve un análisis completo
+    Manejador global de excepciones para capturar errores no controlados.
+    
+    Args:
+        request: Objeto Request de FastAPI
+        exc: Excepción capturada
+        
+    Returns:
+        HTTPException con mensaje apropiado
     """
-    # Validar la imagen
-    if not validate_image(file):
-        raise HTTPException(status_code=400, detail="Formato de imagen no válido. Use .jpg o .png")
-    
-    # Generar un nombre de archivo único
-    file_id = str(uuid.uuid4())
-    file_ext = os.path.splitext(file.filename)[1]
-    file_name = f"{file_id}{file_ext}"
-    file_path = os.path.join(UPLOAD_DIR, file_name)
-    
-    # Guardar la imagen localmente
-    with open(file_path, "wb") as buffer:
-        buffer.write(await file.read())
-    
-    # Procesar la imagen
-    try:
-        image = process_image(file_path)
-    except Exception as e:
-        os.remove(file_path)
-        raise HTTPException(status_code=400, detail=f"Error procesando la imagen: {str(e)}")
-    
-    # Subir a S3
-    s3_key = f"uploads/{file_name}"
-    upload_file(file_path, s3_key)
-    image_url = get_file_url(s3_key)
-    
-    # Realizar análisis
-    try:
-        skin_results = skin_analyzer.analyze(image)
-        emotion_results = emotion_analyzer.analyze(image)
-        age_gender_results = age_gender_analyzer.analyze(image)
-        health_results = health_analyzer.analyze(image)
-        
-        # Construir respuesta
-        response = FaceAnalysisResponse(
-            image_url=image_url,
-            skin=skin_results,
-            emotion=emotion_results,
-            age_gender=age_gender_results,
-            health=health_results
-        )
-        
-        return response
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error en el análisis: {str(e)}")
-    finally:
-        # Limpiar archivo temporal
-        if os.path.exists(file_path):
-            os.remove(file_path)
+    logger.error(f"Error no controlado: {str(exc)}", exc_info=True)
+    return HTTPException(
+        status_code=500,
+        detail="Error interno del servidor. Por favor, inténtelo más tarde."
+    )
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    """Punto de entrada para ejecución directa"""
+    uvicorn.run(
+        "app.main:app", 
+        host=config.host, 
+        port=config.port,
+        reload=not config.is_production,
+        workers=config.workers
+    )
