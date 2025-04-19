@@ -81,7 +81,7 @@ Sistema avanzado de análisis facial y emocional que integra múltiples tecnolog
 # Descargar desde: https://cmake.org/download/
 # Asegurarse de marcar "Add CMake to the system PATH" durante la instalación
 
-# 3. Instalar Python 3.9 desde python.org
+# 3. Instalar Python 3.10 desde python.org
 # Asegurarse de marcar "Add Python to PATH" durante la instalación
 
 # 4. Reiniciar el sistema después de la instalación
@@ -101,9 +101,9 @@ sudo apt-get install -y \
     libatlas-base-dev \
     libgtk-3-dev \
     libboost-python-dev \
-    python3.9 \
-    python3.9-dev \
-    python3.9-venv
+    python3.10 \
+    python3.10-dev \
+    python3.10-venv
 ```
 
 #### macOS
@@ -113,11 +113,11 @@ sudo apt-get install -y \
 
 # Instalar dependencias
 brew install cmake pkg-config
-brew install python@3.9
+brew install python@3.10
 ```
 
-### Python 3.9
-El proyecto está optimizado para Python 3.9. Se recomienda usar esta versión específica.
+### Python 3.10
+El proyecto ha sido actualizado para usar Python 3.10. Se recomienda usar esta versión específica para garantizar la compatibilidad con todas las dependencias.
 
 ## Estructura del Proyecto
 ```
@@ -159,21 +159,28 @@ cd [NOMBRE_DEL_DIRECTORIO]
 
 #### Windows 11
 ```powershell
-# IMPORTANTE: Asegúrate de tener Python 3.9 instalado
+# IMPORTANTE: Asegúrate de tener Python 3.10 instalado
 # Si tienes múltiples versiones de Python, usa específicamente:
-py -3.9 -m venv venv
+py -3.10 -m venv venv
 .\venv\Scripts\activate
 ```
 
 #### Ubuntu/Debian
 ```bash
-python3.9 -m venv venv
+# Si necesitas instalar Python 3.10:
+# sudo apt update
+# sudo apt install python3.10 python3.10-venv python3.10-dev
+
+python3.10 -m venv venv
 source venv/bin/activate
 ```
 
 #### macOS
 ```bash
-python3.9 -m venv venv
+# Si necesitas instalar Python 3.10 con Homebrew:
+# brew install python@3.10
+
+python3.10 -m venv venv
 source venv/bin/activate
 ```
 
