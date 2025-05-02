@@ -12,7 +12,6 @@ import numpy as np
 
 from app.config import UPLOAD_DIR
 from app.utils.image import validate_image, process_image
-from app.aws.s3 import upload_file, get_file_url
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ class ImageService:
     @staticmethod
     async def save_and_process_image(file: UploadFile) -> Tuple[str, np.ndarray, str, str]:
         """
-        Guarda una imagen subida, la procesa y la sube a S3.
+        Guarda una imagen subida y la procesa.
         
         Args:
             file: Archivo de imagen subido
@@ -66,15 +65,8 @@ class ImageService:
             logger.error(f"Error al procesar la imagen: {str(e)}")
             raise HTTPException(status_code=400, detail=f"Error procesando la imagen: {str(e)}")
         
-        # Subir a S3
-        try:
-            s3_key = f"uploads/{file_name}"
-            upload_file(file_path, s3_key)
-            image_url = get_file_url(s3_key)
-        except Exception as e:
-            logger.warning(f"Error al subir a S3, usando URL local: {str(e)}")
-            # Si falla S3, usamos URL local
-            image_url = f"/uploads/{file_name}"
+        # Generar URL local para la imagen
+        image_url = f"/uploads/{file_name}"
         
         return file_path, processed_image, file_name, image_url
     

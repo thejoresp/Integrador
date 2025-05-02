@@ -53,10 +53,10 @@ temp/
 *.db
 *.sqlite3
 
-# Modelos y datos
-models/
-data/
-uploads/
+# Imágenes subidas por usuarios (mantener estructura de carpetas)
+uploads/**/*.jpg
+uploads/**/*.png
+uploads/**/*.jpeg
 
 # Certificados y claves
 *.pem
@@ -64,6 +64,10 @@ uploads/
 *.crt
 
 # Archivos específicos del proyecto
-app/models/
-app/data/
-app/uploads/
+# Mantener la estructura de carpetas pero ignorar su contenido
+models/**/*
+!models/.gitkeep
+!models/pretrained/.gitkeep
+
+app/uploads/**/*
+!app/uploads/.gitkeep
