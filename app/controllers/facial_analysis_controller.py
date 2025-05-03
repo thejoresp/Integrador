@@ -1,64 +1,93 @@
+"""
+Controlador para el análisis facial.
+Gestiona las peticiones de análisis facial y coordina las respuestas.
+"""
+
 import logging
-from fastapi import UploadFile, HTTPException
+from fastapi import UploadFile, Depends, HTTPException, status
+from typing import Dict, Any
 
-from app.schemas.response import FaceAnalysisResponse
-from app.services.image_service import ImageService
-from app.services.face_analyzer import FaceAnalyzerService
+from app.exceptions.base import BaseFacialAnalysisError
+from app.repositories.image_repository import ImageRepository
+from app.services.facial_analysis_service import FacialAnalysisService
+from app.schemas.facial_analysis import FacialAnalysisResponseSchema
+from app.views.facial_analysis_view import FacialAnalysisView
 
-# Configurar logging
 logger = logging.getLogger(__name__)
+
 
 class FacialAnalysisController:
     """
-    Controlador para el análisis facial.
-    Maneja la coordinación entre servicios para el análisis facial.
+    Controlador para gestionar las peticiones de análisis facial.
+    
+    Este controlador se encarga de recibir las solicitudes, coordinar la ejecución
+    de los servicios necesarios y formatear las respuestas.
     """
     
-    def __init__(self):
-        """Inicializa el controlador con los servicios necesarios"""
-        self.image_service = ImageService()
-        self.face_analyzer_service = FaceAnalyzerService()
-    
-    async def analyze_image(self, file: UploadFile) -> FaceAnalysisResponse:
+    def __init__(
+        self,
+        image_repository: ImageRepository,
+        facial_analysis_service: FacialAnalysisService,
+        facial_analysis_view: FacialAnalysisView
+    ):
         """
-        Analiza una imagen facial y retorna los resultados del análisis.
+        Inicializa el controlador con los servicios necesarios.
         
         Args:
-            file: Imagen facial a analizar
+            image_repository: Repositorio para gestionar imágenes
+            facial_analysis_service: Servicio para análisis facial
+            facial_analysis_view: Vista para formatear respuestas
+        """
+        self.image_repository = image_repository
+        self.facial_analysis_service = facial_analysis_service
+        self.view = facial_analysis_view
+    
+    async def analyze_image(self, file: UploadFile) -> FacialAnalysisResponseSchema:
+        """
+        Procesa una solicitud de análisis facial.
+        
+        Args:
+            file: Archivo de imagen subido
             
         Returns:
-            Objeto FaceAnalysisResponse con los resultados del análisis
+            FacialAnalysisResponseSchema: Resultado del análisis facial
             
         Raises:
-            HTTPException: Si hay un error durante el procesamiento o análisis
+            HTTPException: Si hay un error en el procesamiento
         """
-        file_path = None
-        
         try:
-            # Procesar imagen usando el servicio de imágenes
-            file_path, processed_image, _, image_url = await self.image_service.save_and_process_image(file)
+            # 1. Guardar la imagen
+            file_path, file_name = await self.image_repository.save_image(file)
             
-            # Realizar análisis usando el servicio de análisis facial
-            analysis_results = self.face_analyzer_service.analyze_all(processed_image)
+            # 2. Cargar la imagen para análisis
+            image = self.image_repository.load_image(file_path)
             
-            # Construir respuesta
-            response = FaceAnalysisResponse(
-                image_url=image_url,
-                skin=analysis_results["skin"],
-                emotion=analysis_results["emotion"],
-                age_gender=analysis_results["age_gender"],
-                health=analysis_results["health"]
+            # 3. Procesar la imagen
+            processed_image = self.image_repository.process_image(image)
+            
+            # 4. Obtener URL de la imagen
+            image_url = self.image_repository.get_image_url(file_name)
+            
+            # 5. Realizar análisis facial
+            analysis_result = self.facial_analysis_service.analyze_image(
+                image=processed_image,
+                image_url=image_url
             )
             
+            # 6. Formatear respuesta
+            response = self.view.format_analysis_result(analysis_result)
+            
             return response
-        
-        except HTTPException:
-            # Re-lanzar excepciones HTTP para mantener el código de estado
-            raise
+            
+        except BaseFacialAnalysisError as e:
+            logger.error(f"Error en análisis facial: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e)
+            )
         except Exception as e:
-            logger.error(f"Error en el análisis facial: {str(e)}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Error en el análisis: {str(e)}")
-        finally:
-            # Limpiar archivo temporal usando el servicio
-            if file_path:
-                self.image_service.cleanup_temp_file(file_path)
+            logger.error(f"Error inesperado: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Error interno al procesar la imagen"
+            )

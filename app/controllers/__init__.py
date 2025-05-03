@@ -1,6 +1,7 @@
 """
-Módulo de inicialización para controladores.
-Los controladores contienen la lógica de negocio y coordinan el flujo de datos entre modelos y vistas.
+Paquete de controladores para la aplicación de análisis facial.
 """
 
 from app.controllers.facial_analysis_controller import FacialAnalysisController
+
+__all__ = ["FacialAnalysisController"]

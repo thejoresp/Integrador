@@ -7,7 +7,7 @@ class AnalysisRequestDTO(BaseModel):
     options: Optional[Dict[str, Any]] = Field(default_factory=dict)
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "session_id": "abc123",
                 "options": {
