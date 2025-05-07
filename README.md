@@ -39,14 +39,65 @@ Sistema avanzado de análisis facial y emocional que integra múltiples tecnolog
 ## Requisitos del Sistema
 
 ### Dependencias del Sistema
+
+#### Ubuntu/Debian
 ```bash
-# Ubuntu/Debian
 sudo apt-get update
-sudo apt-get install -y build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev
+sudo apt-get install -y build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev python3.10 python3.10-dev python3.10-venv
 ```
 
-### Python 3.9
-El proyecto está optimizado para Python 3.9. Se recomienda usar esta versión específica.
+#### CentOS/RHEL/Fedora
+```bash
+sudo dnf install -y gcc gcc-c++ cmake make pkgconfig libX11-devel atlas-devel gtk3-devel boost-devel boost-python3-devel python3.10 python3.10-devel
+```
+
+#### Arch Linux
+```bash
+sudo pacman -Syu
+sudo pacman -S base-devel cmake pkg-config libx11 atlas gtk3 boost boost-libs python python-pip
+```
+
+#### macOS
+```bash
+# Instalar Homebrew si no está instalado
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Instalar dependencias
+brew update
+brew install cmake pkg-config boost boost-python3
+brew install opencv
+
+# Instalar Python 3.10
+brew install python@3.10
+
+# Para instalar dlib correctamente
+brew install cmake
+```
+
+#### Windows
+1. Instalar Visual Studio Build Tools (incluye C++ build tools)
+   - Descargar desde: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+   - Durante la instalación, seleccionar "Desarrollo para escritorio con C++"
+
+2. Instalar Python 3.10
+   - Descargar desde: https://www.python.org/downloads/release/python-31011/
+   - Asegurarse de marcar la opción "Add Python to PATH" durante la instalación
+
+3. Instalar CMake
+   - Descargar desde: https://cmake.org/download/
+   - Asegurarse de agregar CMake al PATH del sistema
+
+4. PowerShell (Administrador):
+```powershell
+# Instalar chocolatey (opcional pero recomendado)
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Con chocolatey instalado:
+choco install cmake -y
+```
+
+### Python 3.10
+El proyecto está optimizado para Python 3.10. Se recomienda usar esta versión específica.
 
 ## Instalación
 
@@ -57,9 +108,23 @@ cd [NOMBRE_DEL_DIRECTORIO]
 ```
 
 2. Crear y activar entorno virtual:
+
+**Ubuntu/Debian:**
 ```bash
-python3.9 -m venv venv
+python3.10 -m venv venv
 source venv/bin/activate
+```
+
+**macOS:**
+```bash
+python3.10 -m venv venv
+source venv/bin/activate
+```
+
+**Windows:**
+```bash
+py -3.10 -m venv venv
+venv\Scripts\activate
 ```
 
 3. Instalar dependencias:
