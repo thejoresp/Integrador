@@ -64,3 +64,8 @@ models/**/*
 !models/.gitkeep
 !models/pretrained/.gitkeep
 
+# Carpetas de uploads
+uploads/
+uploads/**/*
+!uploads/.gitkeep
+
