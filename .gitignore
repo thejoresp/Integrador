@@ -69,3 +69,4 @@ uploads/
 uploads/**/*
 !uploads/.gitkeep
 
+HUGGING_FACE_HUB_TOKEN=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
