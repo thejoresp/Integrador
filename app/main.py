@@ -20,6 +20,7 @@ from app.analyzers.skin import SkinAnalyzer
 from app.analyzers.emotion import EmotionAnalyzer
 from app.analyzers.age_gender import AgeGenderAnalyzer
 from app.analyzers.health import HealthAnalyzer
+from app.analyzers.derm import DermAnalyzer
 from app.schemas.response import FaceAnalysisResponse
 from app.utils.image import validate_image, process_image
 from app.exceptions.base import BaseFacialAnalysisError
@@ -164,11 +165,13 @@ async def analyze_face(file: UploadFile = File(...)):
         emotion_analyzer = EmotionAnalyzer()
         age_gender_analyzer = AgeGenderAnalyzer()
         health_analyzer = HealthAnalyzer()
+        derm_analyzer = DermAnalyzer()
         
         skin_results = skin_analyzer.analyze(image)
         emotion_results = emotion_analyzer.analyze(image)
         age_gender_results = age_gender_analyzer.analyze(image)
         health_results = health_analyzer.analyze(image)
+        derm_results = derm_analyzer.analyze(image)
         
         # Construir respuesta
         response = FaceAnalysisResponse(
@@ -176,7 +179,8 @@ async def analyze_face(file: UploadFile = File(...)):
             skin=skin_results,
             emotion=emotion_results,
             age_gender=age_gender_results,
-            health=health_results
+            health=health_results,
+            derm_analysis=derm_results
         )
         
         return response

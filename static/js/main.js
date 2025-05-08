@@ -197,6 +197,45 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             healthResults.innerHTML = healthHtml;
         }
+
+        // Actualizar sección Derm Foundation
+        if (data.derm_analysis) {
+            let dermHtml = `
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Análisis Derm Foundation</h5>
+                        <div class="data-row">
+                            <span class="result-label">Estado:</span>
+                            <span class="result-value">${data.derm_analysis.status}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="result-label">Dimensiones del análisis:</span>
+                            <span>${data.derm_analysis.embedding_dimensions}</span>
+                        </div>
+                        <div class="mt-3">
+                            <h6>Características de la piel:</h6>
+                            <div class="data-row">
+                                <span class="result-label">Textura:</span>
+                                <span class="result-value">${data.derm_analysis.skin_features.texture}</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="result-label">Tono:</span>
+                                <span class="result-value">${data.derm_analysis.skin_features.tone}</span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="result-label">Condiciones detectadas:</span>
+                                <ul class="list-unstyled mt-1">
+                                    ${data.derm_analysis.skin_features.conditions.map(condition => 
+                                        `<li><i class="fas fa-check-circle text-success"></i> ${condition}</li>`
+                                    ).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('derm-results').innerHTML = dermHtml;
+        }
     }
     
     function createEmotionChart(emotions) {
