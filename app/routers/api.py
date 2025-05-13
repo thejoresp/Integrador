@@ -1,42 +1,31 @@
 """
-Enrutador para las API REST.
-Define los endpoints para operaciones de análisis facial.
+Router para las rutas de API de la aplicación.
 """
 
-import logging
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from typing import Dict, Any
 
-from app.controllers.facial_analysis_controller import FacialAnalysisController
-from app.schemas.response import FaceAnalysisResponse
+from app.dependencies import verify_optional_api_key, rate_limit
+from app.core.logger import get_logger
 
-logger = logging.getLogger(__name__)
+# Configuración
+logger = get_logger(__name__)
 
-# Crear el enrutador
-router = APIRouter(prefix="/api", tags=["api"])
+# Router
+router = APIRouter(
+    prefix="/api/v1",
+    tags=["api"],
+    dependencies=[
+        Depends(rate_limit),
+        Depends(verify_optional_api_key),
+    ]
+)
 
-# Dependencia para obtener el controlador
-def get_facial_analysis_controller():
-    return FacialAnalysisController()
-
-@router.post("/analyze", response_model=FaceAnalysisResponse)
-async def analyze_face(
-    file: UploadFile = File(...),
-    controller: FacialAnalysisController = Depends(get_facial_analysis_controller)
-):
-    """
-    Analiza una imagen facial y devuelve los resultados del análisis.
-    
-    Args:
-        file: Imagen a analizar
-        controller: Controlador para el análisis facial (inyectado)
-        
-    Returns:
-        Resultados del análisis facial
-    """
-    try:
-        return await controller.analyze_image(file)
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error no controlado en API: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Error en el servidor: {str(e)}")
+# Rutas de API
+@router.get("/status")
+async def api_status() -> Dict[str, Any]:
+    """Estado de la API."""
+    return {
+        "status": "operational",
+        "message": "Sistema de análisis de piel operativo"
+    }

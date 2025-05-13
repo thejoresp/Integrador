@@ -1,7 +1,5 @@
 """
-Paquete de servicios para la aplicación de análisis facial.
+Paquete de servicios para análisis de piel.
 """
 
-from app.services.facial_analysis_service import FacialAnalysisService
-
-__all__ = ["FacialAnalysisService"] 
+__all__ = [] 

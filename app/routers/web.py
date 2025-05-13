@@ -1,87 +1,59 @@
 """
-Enrutador para las vistas web.
-Define las rutas para la interfaz de usuario.
+Router para las rutas web de la aplicación.
 """
 
+from fastapi import APIRouter, Depends, Request, File, UploadFile, Form, HTTPException
+from fastapi.responses import HTMLResponse, JSONResponse
+from typing import Optional
+import os
 import logging
-from fastapi import APIRouter, Request, UploadFile, File, HTTPException, Depends
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 
-from app.config import TEMPLATE_DIR
-from app.controllers.facial_analysis_controller import FacialAnalysisController
+from app.config import get_settings
+from app.core.logger import get_logger
+from app.dependencies import verify_optional_api_key, rate_limit
 
-logger = logging.getLogger(__name__)
+# Configuración
+logger = get_logger(__name__)
+settings = get_settings()
 
-# Crear el enrutador
-router = APIRouter(tags=["web"])
+# Router
+router = APIRouter(
+    dependencies=[
+        Depends(rate_limit),
+        Depends(verify_optional_api_key),
+    ]
+)
 
-# Configurar plantillas
-templates = Jinja2Templates(directory=TEMPLATE_DIR)
-
-# Dependencia para obtener el controlador
-def get_facial_analysis_controller():
-    return FacialAnalysisController()
-
+# Rutas web
 @router.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    """
-    Página principal de la aplicación
-    
-    Args:
-        request: Objeto Request de FastAPI
-        
-    Returns:
-        Plantilla HTML renderizada
-    """
-    return templates.TemplateResponse("index.html", {"request": request})
+async def web_root(request: Request):
+    """Ruta principal de la interfaz web."""
+    return request.app.state.templates.TemplateResponse(
+        "index.html",
+        {"request": request}
+    )
 
-@router.post("/analyze-web", response_class=HTMLResponse)
-async def analyze_web(
-    request: Request,
-    file: UploadFile = File(...),
-    controller: FacialAnalysisController = Depends(get_facial_analysis_controller)
-):
-    """
-    Analiza una imagen y muestra los resultados en una página web
-    
-    Args:
-        request: Objeto Request de FastAPI
-        file: Imagen a analizar
-        controller: Controlador para el análisis facial (inyectado)
-        
-    Returns:
-        Página web con los resultados del análisis
-    """
-    try:
-        # Realizar análisis
-        results = await controller.analyze_image(file)
-        
-        # Renderizar plantilla con resultados
-        return templates.TemplateResponse(
-            "result.html", 
-            {
-                "request": request,
-                "results": results
-            }
-        )
-    except HTTPException as e:
-        # Mostrar error en la interfaz
-        return templates.TemplateResponse(
-            "error.html",
-            {
-                "request": request,
-                "error_code": e.status_code,
-                "error_message": e.detail
-            }
-        )
-    except Exception as e:
-        logger.error(f"Error no controlado en la interfaz web: {str(e)}", exc_info=True)
-        return templates.TemplateResponse(
-            "error.html",
-            {
-                "request": request,
-                "error_code": 500,
-                "error_message": f"Error en el servidor: {str(e)}"
-            }
-        )
+@router.get("/app", response_class=HTMLResponse)
+async def app_page(request: Request):
+    """Página principal de la aplicación."""
+    return request.app.state.templates.TemplateResponse(
+        "index.html", 
+        {"request": request}
+    )
+
+@router.get("/docs-piel", response_class=HTMLResponse)
+async def skin_docs(request: Request):
+    """Documentación del API de análisis de piel."""
+    return request.app.state.templates.TemplateResponse(
+        "docs-skin.html",
+        {"request": request}
+    )
+
+@router.get("/info", response_class=HTMLResponse)
+async def info_page(request: Request):
+    """Página de información sobre la aplicación."""
+    version = settings.APP_VERSION
+    return request.app.state.templates.TemplateResponse(
+        "info.html",
+        {"request": request, "version": version}
+    )

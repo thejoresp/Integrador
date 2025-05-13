@@ -30,7 +30,7 @@ Sistema avanzado de análisis facial y emocional que integra múltiples tecnolog
 - Seguimiento temporal de emociones
 
 ### Características Técnicas
-- API RESTful con FastAPI
+- API RESTful con **FastAPI** 
 - Almacenamiento local de imágenes
 - Interfaz web moderna y responsiva
 - Procesamiento en tiempo real
@@ -190,3 +190,86 @@ Acepta una imagen y devuelve análisis detallado que incluye:
 - Emociones detectadas
 - Estado de la piel
 - Indicadores de salud basados en la apariencia facial
+
+### Análisis de Piel
+
+#### Análisis de condición de piel
+
+```python
+import requests
+
+url = "http://localhost:8080/skin/analyze/condition"
+files = {"file": open("ruta/a/imagen.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
+
+print(f"Hidratación: {result['hydration']}")
+print(f"Textura: {result['texture']}")
+print(f"Poros: {result['pores']}")
+print(f"Grasa: {result['oiliness']}")
+```
+
+#### Análisis de lunares
+
+```python
+import requests
+
+url = "http://localhost:8080/skin/analyze/moles"
+files = {"file": open("ruta/a/imagen.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
+
+print(f"Total de lunares: {result['total_count']}")
+print(f"Lunares benignos: {result['benign_count']}")
+print(f"Lunares sospechosos: {result['suspicious_count']}")
+```
+
+#### Análisis de tono de piel
+
+```python
+import requests
+
+url = "http://localhost:8080/skin/analyze/tone"
+files = {"file": open("ruta/a/imagen.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
+
+print(f"Tipo Fitzpatrick: {result['fitzpatrick_type']}")
+print(f"Tono: {result['tone_name']}")
+```
+
+#### Análisis completo
+
+```python
+import requests
+
+url = "http://localhost:8080/skin/analyze/complete"
+files = {"file": open("ruta/a/imagen.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
+
+# Acceder a los diferentes componentes del análisis
+skin_condition = result['skin_condition']
+mole_analysis = result['mole_analysis']
+skin_tone = result['skin_tone']
+```
+
+#### Obtener recomendaciones
+
+```python
+import requests
+
+url = "http://localhost:8080/skin/recommendations"
+params = {
+    "hydration": 70,
+    "texture": 60,
+    "pores": 80,
+    "fitzpatrick_type": 3,
+    "has_suspicious_moles": True
+}
+response = requests.get(url, params=params)
+recommendations = response.json()
+
+for rec in recommendations:
+    print(f"- {rec}")
+```

@@ -10,26 +10,21 @@ from typing import List
 from fastapi import FastAPI, Request, UploadFile, File, HTTPException, Depends, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
+from pathlib import Path
 
-from app.config import get_settings, STATIC_DIR, TEMPLATE_DIR, UPLOAD_DIR, ensure_upload_dir
-from app.routers import analysis_router
-from app.analyzers.skin import SkinAnalyzer
-from app.analyzers.emotion import EmotionAnalyzer
-from app.analyzers.age_gender import AgeGenderAnalyzer
-from app.analyzers.health import HealthAnalyzer
-from app.analyzers.derm import DermAnalyzer
-from app.schemas.response import FaceAnalysisResponse
-from app.utils.image import validate_image, process_image
-from app.exceptions.base import BaseFacialAnalysisError
+from app.config import get_settings
+from app.routes import get_all_routes
+from app.core.logger import setup_global_logging, get_logger
+
+# Crear instancia de configuración
+settings = get_settings()
 
 # Configurar logging
-logger = logging.getLogger(__name__)
-
-# Obtener configuración
-config = get_settings()
+setup_global_logging(log_file="app.log")
+logger = get_logger(__name__)
 
 def create_application() -> FastAPI:
     """
@@ -40,68 +35,79 @@ def create_application() -> FastAPI:
     """
     # Crear aplicación
     app = FastAPI(
-        title=config.APP_NAME,
-        description=config.APP_DESCRIPTION,
-        version=config.APP_VERSION,
-        docs_url="/docs" if not config.is_production else None,
-        redoc_url="/redoc" if not config.is_production else None,
+        title=settings.APP_NAME,
+        description=settings.APP_DESCRIPTION,
+        version=settings.APP_VERSION,
+        docs_url="/docs" if settings.ENABLE_DOCS else None,
+        redoc_url="/redoc" if settings.ENABLE_DOCS else None,
     )
     
     # Configurar CORS
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    if settings.ENABLE_CORS:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=settings.CORS_ORIGINS,
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
     
     # Guardar configuración en el estado de la aplicación
-    app.state.config = config
+    app.state.config = settings
+    
+    # Montar directorios estáticos
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+    
+    # Montar directorio de uploads como estático para acceder a las imágenes
+    uploads_dir = Path(app.state.config.UPLOAD_DIR)
+    if not uploads_dir.exists():
+        uploads_dir.mkdir(parents=True, exist_ok=True)
+    app.mount("/uploads", StaticFiles(directory=app.state.config.UPLOAD_DIR), name="uploads")
     
     # Configurar plantillas
-    templates = Jinja2Templates(directory=TEMPLATE_DIR)
-    app.state.templates = templates
-    
-    # Montar archivos estáticos
-    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-    app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+    app.state.templates = Jinja2Templates(directory="templates")
     
     # Registrar rutas
-    app.include_router(analysis_router.router)
+    app.include_router(get_all_routes())
+    
+    # Ruta de redirección para la raíz
+    @app.get("/")
+    async def redirect_to_app():
+        return RedirectResponse(url="/app")
     
     # Configurar manejadores de eventos
     @app.on_event("startup")
     async def startup_event():
         """Acciones a ejecutar al iniciar la aplicación."""
-        logger.info("Iniciando aplicación de análisis facial...")
-        ensure_upload_dir()
+        logger.info(f"Iniciando aplicación {settings.APP_NAME} v{settings.APP_VERSION}")
+        
+        # Crear directorios necesarios
+        os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+        
+        # Verificar si existe la carpeta de modelos
+        models_dir = Path(settings.MODELS_DIR)
+        if not models_dir.exists():
+            models_dir.mkdir(parents=True, exist_ok=True)
+            logger.warning(f"Se creó el directorio de modelos: {models_dir}")
+        
+        # Carpeta específica para modelos de piel
+        skin_models_dir = Path(settings.SKIN_MODELS_DIR)
+        if not skin_models_dir.exists():
+            skin_models_dir.mkdir(parents=True, exist_ok=True)
+            logger.info(f"Se creó el directorio para modelos de análisis de piel: {skin_models_dir}")
+        
+        logger.info("Aplicación iniciada correctamente")
     
     @app.on_event("shutdown")
     async def shutdown_event():
         """Acciones a ejecutar al detener la aplicación."""
-        logger.info("Deteniendo aplicación de análisis facial...")
-    
-    # Configurar manejo de excepciones
-    @app.exception_handler(BaseFacialAnalysisError)
-    async def facial_analysis_exception_handler(request: Request, exc: BaseFacialAnalysisError):
-        """Manejador para excepciones del dominio de análisis facial."""
-        return {
-            "status_code": status.HTTP_400_BAD_REQUEST,
-            "detail": str(exc)
-        }
-    
-    # Ruta principal
-    @app.get("/", response_class=HTMLResponse)
-    async def index(request: Request):
-        """Página de inicio de la aplicación."""
-        return templates.TemplateResponse("index.html", {"request": request})
+        logger.info("Cerrando la aplicación")
     
     # Verificación de estado
     @app.get("/health")
     async def health_check():
         """Endpoint para verificar el estado de la aplicación."""
-        return {"status": "ok", "version": config.APP_VERSION}
+        return {"status": "ok", "version": settings.APP_VERSION}
     
     # Personalizar documentación OpenAPI
     def custom_openapi():
@@ -109,9 +115,9 @@ def create_application() -> FastAPI:
             return app.openapi_schema
         
         openapi_schema = get_openapi(
-            title=config.APP_NAME,
-            version=config.APP_VERSION,
-            description=config.APP_DESCRIPTION,
+            title=settings.APP_NAME,
+            version=settings.APP_VERSION,
+            description=settings.APP_DESCRIPTION,
             routes=app.routes,
         )
         
@@ -125,77 +131,17 @@ def create_application() -> FastAPI:
     
     app.openapi = custom_openapi
     
+    # Middleware para manejar excepciones
+    @app.middleware("http")
+    async def log_and_add_process_time_header(request: Request, call_next):
+        try:
+            response = await call_next(request)
+            return response
+        except Exception as e:
+            logger.error(f"Error no manejado: {str(e)}")
+            raise HTTPException(status_code=500, detail="Error interno del servidor")
+    
     return app
 
 # Crear la aplicación
 app = create_application()
-
-@app.post("/analyze", response_model=FaceAnalysisResponse)
-async def analyze_face(file: UploadFile = File(...)):
-    """
-    Analiza una imagen facial y devuelve un análisis completo
-    """
-    # Validar la imagen
-    if not validate_image(file):
-        raise HTTPException(status_code=400, detail="Formato de imagen no válido. Use .jpg o .png")
-    
-    # Generar un nombre de archivo único
-    file_id = str(uuid.uuid4())
-    file_ext = os.path.splitext(file.filename)[1]
-    file_name = f"{file_id}{file_ext}"
-    file_path = os.path.join(UPLOAD_DIR, file_name)
-    
-    # Guardar la imagen localmente
-    with open(file_path, "wb") as buffer:
-        buffer.write(await file.read())
-    
-    # Procesar la imagen
-    try:
-        image = process_image(file_path)
-    except Exception as e:
-        os.remove(file_path)
-        raise HTTPException(status_code=400, detail=f"Error procesando la imagen: {str(e)}")
-    
-    # Generar URL local
-    image_url = f"/uploads/{file_name}"
-    
-    # Realizar análisis
-    try:
-        skin_analyzer = SkinAnalyzer()
-        emotion_analyzer = EmotionAnalyzer()
-        age_gender_analyzer = AgeGenderAnalyzer()
-        health_analyzer = HealthAnalyzer()
-        derm_analyzer = DermAnalyzer()
-        
-        skin_results = skin_analyzer.analyze(image)
-        emotion_results = emotion_analyzer.analyze(image)
-        age_gender_results = age_gender_analyzer.analyze(image)
-        health_results = health_analyzer.analyze(image)
-        derm_results = derm_analyzer.analyze(image)
-        
-        # Construir respuesta
-        response = FaceAnalysisResponse(
-            image_url=image_url,
-            skin=skin_results,
-            emotion=emotion_results,
-            age_gender=age_gender_results,
-            health=health_results,
-            derm_analysis=derm_results
-        )
-        
-        return response
-    
-    except Exception as e:
-        # En caso de error, no eliminar la imagen para debugging
-        raise HTTPException(status_code=500, detail=f"Error en el análisis: {str(e)}")
-
-if __name__ == "__main__":
-    import uvicorn
-    # Configuración para desarrollo local
-    uvicorn.run(
-        "app.main:app",
-        host="127.0.0.1",  # Solo accesible localmente
-        port=8000,
-        reload=True,
-        log_level="info"
-    )
