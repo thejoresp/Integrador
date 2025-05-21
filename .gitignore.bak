@@ -53,6 +53,11 @@ temp/
 *.db
 *.sqlite3
 
+# Imágenes subidas por usuarios (mantener estructura de carpetas)
+uploads/**/*.jpg
+uploads/**/*.png
+uploads/**/*.jpeg
+
 # Certificados y claves
 *.pem
 *.key
@@ -64,9 +69,5 @@ models/**/*
 !models/.gitkeep
 !models/pretrained/.gitkeep
 
-# Carpetas de uploads
-uploads/
-uploads/**/*
-!uploads/.gitkeep
-
-HUGGING_FACE_HUB_TOKEN=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
+app/uploads/**/*
+!app/uploads/.gitkeep

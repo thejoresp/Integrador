@@ -1,45 +1,161 @@
-import os
-from dotenv import load_dotenv
-from typing import Set, Tuple, Any
+"""
+Configuración centralizada para la aplicación de análisis facial.
+Define constantes, configuraciones y ajustes para toda la aplicación.
+"""
 
+import os
+import logging
+from functools import lru_cache
+from typing import Set, Dict, Any, List, Optional, Union
+from pydantic_settings import BaseSettings
+from pathlib import Path
+from pydantic import validator
+
+# Cargar variables de entorno desde .env
+from dotenv import load_dotenv
 load_dotenv()
 
-class Config:
-    SECRET_KEY: str = os.getenv('SECRET_KEY', 'dev-key-change-in-production')
+# Configuración base de directorios
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+MODEL_DIR = os.path.join(BASE_DIR, "models", "pretrained")
+
+# Asegurar que existan los directorios necesarios
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(MODEL_DIR, exist_ok=True)
+
+# Configuración de logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+
+
+class Config(BaseSettings):
+    """
+    Configuración central de la aplicación utilizando Pydantic para validación.
+    Los valores por defecto pueden ser sobrescritos por variables de entorno.
+    """
+    # Directorios de la aplicación (importante asegurar que estén disponibles)
+    BASE_DIR: str = str(BASE_DIR)
+    STATIC_DIR: str = STATIC_DIR
+    TEMPLATE_DIR: str = TEMPLATE_DIR
+    UPLOAD_DIR: str = UPLOAD_DIR
     
-    # AWS Configuration
-    AWS_ACCESS_KEY_ID: str = os.getenv('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY: str = os.getenv('AWS_SECRET_ACCESS_KEY')
-    AWS_REGION: str = os.getenv('AWS_REGION', 'us-east-1')
-    S3_BUCKET: str = os.getenv('S3_BUCKET')
+    # Configuración de la aplicación
+    APP_NAME: str = "Sistema de Análisis de Piel - PielSana IA"
+    APP_VERSION: str = "2.0.0"
+    APP_DESCRIPTION: str = "Plataforma avanzada para análisis de piel con detección de condiciones cutáneas, lunares y evaluación de tono."
     
-    # Optimizaciones para capa gratuita AWS
-    S3_AUTO_CLEANUP_ENABLED: bool = os.getenv('S3_AUTO_CLEANUP_ENABLED', 'FALSE').upper() == 'TRUE'
-    S3_AUTO_CLEANUP_DAYS: int = int(os.getenv('S3_AUTO_CLEANUP_DAYS', '30'))
-    S3_REDUCED_REDUNDANCY: bool = os.getenv('S3_REDUCED_REDUNDANCY', 'TRUE').upper() == 'TRUE'
-    IMG_COMPRESSION_QUALITY: int = int(os.getenv('IMG_COMPRESSION_QUALITY', '85'))
-    MAINTENANCE_TOKEN: str = os.getenv('MAINTENANCE_TOKEN', 'cambiar-en-produccion')
+    # Configuración del servidor
+    HOST: str = "127.0.0.1"
+    PORT: int = 8000
+    DEBUG: bool = True
+    RELOAD: bool = True
     
-    # App Configuration
-    UPLOAD_FOLDER: str = 'uploads'
-    MAX_CONTENT_LENGTH: int = 50 * 1024 * 1024  # 50MB max-limit
-    ALLOWED_EXTENSIONS: Set[str] = {'jpg', 'jpeg', 'png', 'heic'}
+    # Seguridad
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "super-secret-key-for-development-only")
+    API_KEY: str = os.getenv("API_KEY", "default-api-key-change-in-production")
+    AUTH_ENABLED: bool = False  # Por defecto desactivada en desarrollo
+    MAINTENANCE_TOKEN: str = os.getenv("MAINTENANCE_TOKEN", "maintenance-token")
     
-    # Processing Configuration
-    MIN_IMAGE_RESOLUTION: Tuple[int, int] = (2000, 2000)  # Minimum resolution for good quality
-    TEMP_DIR: str = 'temp'
+    # Configuración de CORS
+    ENABLE_CORS: bool = True
+    CORS_ORIGINS: List[str] = ["*"]
     
-    # Modo de bajo consumo (menor resolución en procesamiento)
-    LOW_RESOURCE_MODE: bool = os.getenv('LOW_RESOURCE_MODE', 'TRUE').upper() == 'TRUE'
+    # Configuración de documentación
+    ENABLE_DOCS: bool = True
     
-    # FastAPI Configuration
-    FASTAPI_HOST: str = os.getenv('FASTAPI_HOST', '0.0.0.0')
-    FASTAPI_PORT: int = int(os.getenv('FASTAPI_PORT', '8000'))
-    WORKERS: int = int(os.getenv('WORKERS', '1'))  # Número de workers, 1 es óptimo para capa gratuita
+    # Configuración de logs
+    LOG_LEVEL: str = "INFO"
     
-    # Modo de desarrollo o producción (afecta configuraciones de optimización)
-    ENV_MODE: str = os.getenv('FASTAPI_ENV', 'development')
+    # Configuración de límite de tasa
+    RATE_LIMIT_ENABLED: bool = False
+    RATE_LIMIT_PER_MINUTE: int = 60
+    
+    # Configuración de carga de archivos
+    MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10 MB
+    ALLOWED_EXTENSIONS: Set[str] = {"jpg", "jpeg", "png", "gif"}
+    IMG_COMPRESSION_QUALITY: int = 85  # Calidad de compresión JPEG
+    
+    # Configuración de modelos
+    MODELS_DIR: str = os.path.join(BASE_DIR, "models")
+    PRETRAINED_MODELS_DIR: str = os.path.join(MODELS_DIR, "pretrained")
+    
+    # Nuevas configuraciones para análisis de piel
+    SKIN_MODELS_DIR: str = os.path.join(PRETRAINED_MODELS_DIR, "skin")
+    ENABLE_SKIN_ANALYSIS: bool = True
+    
+    # Configuración de análisis facial
+    FACIAL_MODELS_DIR: str = os.path.join(PRETRAINED_MODELS_DIR, "facial")
+    ENABLE_FACIAL_ANALYSIS: bool = False
+    
+    # Configuración de hardware
+    FORCE_CPU: bool = os.getenv("FORCE_CPU", "false").lower() == "true"
+    
+    # Configuración de entorno
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+    
+    # Características y capacidades
+    ENABLE_AUTHENTICATION: bool = False
+    
+    class Config:
+        """Configuración interna de Pydantic."""
+        env_file = ".env"
+        case_sensitive = True
+        extra = "ignore"  # Permite campos extras
     
     @property
     def is_production(self) -> bool:
-        return self.ENV_MODE == 'production' 
+        """Indica si la aplicación está en entorno de producción."""
+        return self.ENVIRONMENT.lower() == "production"
+    
+    @property
+    def is_development(self) -> bool:
+        """Indica si la aplicación está en entorno de desarrollo."""
+        return self.ENVIRONMENT.lower() == "development"
+    
+    @property
+    def is_testing(self) -> bool:
+        """Indica si la aplicación está en modo pruebas."""
+        return self.ENVIRONMENT.lower() == "testing"
+    
+    # Validadores
+    @validator("CORS_ORIGINS", pre=True)
+    def parse_cors_origins(cls, v):
+        """Parsea los orígenes CORS desde una cadena separada por comas."""
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(",")]
+        return v
+    
+    @validator("ALLOWED_EXTENSIONS", pre=True)
+    def parse_allowed_extensions(cls, v):
+        """Parsea las extensiones permitidas desde una cadena separada por comas."""
+        if isinstance(v, str):
+            return {ext.strip().lower() for ext in v.split(",")}
+        return v
+
+
+@lru_cache()
+def get_settings() -> Config:
+    """
+    Obtiene la configuración de la aplicación.
+    
+    La función está decorada con lru_cache para evitar cargar la configuración
+    múltiples veces durante el ciclo de vida de la aplicación.
+    
+    Returns:
+        Config: Objeto con la configuración de la aplicación
+    """
+    return Config()
+
+
+def ensure_upload_dir():
+    """
+    Asegura que exista el directorio de uploads.
+    Utilizada durante el inicio de la aplicación.
+    """
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    os.makedirs(MODEL_DIR, exist_ok=True)

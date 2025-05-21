@@ -1,107 +1,274 @@
-# Modelado 3D desde Imágenes de iPhone
+# Sistema de Análisis Facial
 
-Esta aplicación web permite crear modelos 3D de personas utilizando imágenes capturadas desde un iPhone 14 Pro.
+## Descripción
+Sistema avanzado de análisis facial y emocional que integra múltiples tecnologías para proporcionar análisis detallados de rostros en imágenes. El sistema utiliza técnicas de visión por computadora y aprendizaje profundo para detectar y analizar características faciales, emociones y atributos demográficos en tiempo real.
 
-## Características
+## Características Principales
 
-- Procesamiento de imágenes en calidad original
-- Generación de modelo 3D basado en 4 vistas (frente, atrás, izquierda, derecha)
-<<<<<<< Updated upstream
-- Cálculo de dimensiones basado en altura conocida
-- Optimizaciones para aprovechar al máximo la capa gratuita de AWS
-=======
-- Cálculo de dimensiones basado en altura conocida
->>>>>>> Stashed changes
+### Análisis Facial
+- Detección facial de alta precisión
+- Análisis de múltiples rostros simultáneos
+- Detección de orientación facial
+- Estimación de puntos faciales clave
 
-## Requisitos
+### Análisis Demográfico
+- Estimación de edad con alta precisión
+- Detección de género
+- Análisis de etnia
+- Estimación de expresión facial
 
-- Python 3.12+ (recomendado)
-- Cuenta AWS.
+### Análisis Emocional
+- Detección de 7 emociones básicas:
+  - Felicidad
+  - Tristeza
+  - Enojo
+  - Sorpresa
+  - Miedo
+  - Disgusto
+  - Neutral
+- Análisis de intensidad emocional
+- Seguimiento temporal de emociones
 
-## Configuración
+### Características Técnicas
+- API RESTful con **FastAPI** 
+- Almacenamiento local de imágenes
+- Interfaz web moderna y responsiva
+- Procesamiento en tiempo real
+- Soporte para múltiples formatos de imagen
 
-1. Crear entorno virtual:
+## Requisitos del Sistema
+
+### Dependencias del Sistema
+
+#### Ubuntu/Debian
 ```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-.\venv\Scripts\activate   # Windows
+sudo apt-get update
+sudo apt-get install -y build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev python3.10 python3.10-dev python3.10-venv
 ```
 
-2. Instalar dependencias:
+#### CentOS/RHEL/Fedora
 ```bash
+sudo dnf install -y gcc gcc-c++ cmake make pkgconfig libX11-devel atlas-devel gtk3-devel boost-devel boost-python3-devel python3.10 python3.10-devel
+```
+
+#### Arch Linux
+```bash
+sudo pacman -Syu
+sudo pacman -S base-devel cmake pkg-config libx11 atlas gtk3 boost boost-libs python python-pip
+```
+
+#### macOS
+```bash
+# Instalar Homebrew si no está instalado
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Instalar dependencias
+brew update
+brew install cmake pkg-config boost boost-python3
+brew install opencv
+
+# Instalar Python 3.10
+brew install python@3.10
+
+# Para instalar dlib correctamente
+brew install cmake
+```
+
+#### Windows
+1. Instalar Visual Studio Build Tools (incluye C++ build tools)
+   - Descargar desde: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+   - Durante la instalación, seleccionar "Desarrollo para escritorio con C++"
+
+2. Instalar Python 3.10
+   - Descargar desde: https://www.python.org/downloads/release/python-31011/
+   - Asegurarse de marcar la opción "Add Python to PATH" durante la instalación
+
+3. Instalar CMake
+   - Descargar desde: https://cmake.org/download/
+   - Asegurarse de agregar CMake al PATH del sistema
+
+4. PowerShell (Administrador):
+```powershell
+# Instalar chocolatey (opcional pero recomendado)
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Con chocolatey instalado:
+choco install cmake -y
+```
+
+### Python 3.10
+El proyecto está optimizado para Python 3.10. Se recomienda usar esta versión específica.
+
+## Instalación
+
+1. Clonar el repositorio:
+```bash
+git clone [URL_DEL_REPOSITORIO]
+cd [NOMBRE_DEL_DIRECTORIO]
+```
+
+2. Crear y activar entorno virtual:
+
+**Ubuntu/Debian:**
+```bash
+python3.10 -m venv venv
+source venv/bin/activate
+```
+
+**macOS:**
+```bash
+python3.10 -m venv venv
+source venv/bin/activate
+```
+
+**Windows:**
+```bash
+py -3.10 -m venv venv
+venv\Scripts\activate
+```
+3. Instalar dependencias:
+```bash
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-3. Configurar variables de entorno:
-Crear archivo `.env` basado en `.env.example` con:
-```
-# Credenciales de AWS (reemplazar con tus propias credenciales)
-AWS_ACCESS_KEY_ID=tu_access_key
-AWS_SECRET_ACCESS_KEY=tu_secret_key
-AWS_REGION=us-east-1
-S3_BUCKET=nombre_del_bucket
-
-# Configuración de seguridad
-SECRET_KEY=clave_secreta_segura_para_produccion
-MAINTENANCE_TOKEN=token_seguro_para_tareas_mantenimiento
-
-# Configuración de FastAPI
-FASTAPI_ENV=development
-FASTAPI_APP=app.main:app
-FASTAPI_HOST=0.0.0.0
-FASTAPI_PORT=8080
-
-# Optimizaciones para capa gratuita de AWS
-IMG_COMPRESSION_QUALITY=85
-S3_AUTO_CLEANUP_ENABLED=TRUE
-S3_AUTO_CLEANUP_DAYS=30
-S3_REDUCED_REDUNDANCY=TRUE
-
-# Modo de bajo consumo de recursos
-LOW_RESOURCE_MODE=TRUE
-```
-
-## Uso
+## Ejecución
 
 1. Iniciar el servidor:
 ```bash
 python run.py
 ```
 
-2. Acceder a la aplicación web en `http://localhost:8080`
-3. Seguir las instrucciones en pantalla para la captura de imágenes
+El servidor estará disponible en:
+- API: http://localhost:8080
+- Documentación API: http://localhost:8080/docs
 
 ## Estructura del Proyecto
 
 ```
-app/
-├── static/          # Archivos estáticos
-├── templates/       # Plantillas HTML
-├── __init__.py     # Archivo de inicialización del paquete
-├── main.py         # Punto de entrada de la aplicación FastAPI
-├── routes.py       # Rutas y endpoints de la API
-└── config.py       # Configuración de la aplicación
+.
+├── app/
+│   ├── analyzers/      # Módulos de análisis facial
+│   ├── models/         # Modelos de datos
+│   ├── routers/        # Rutas de la API
+│   ├── schemas/        # Esquemas de datos
+│   ├── services/       # Servicios
+│   ├── utils/          # Utilidades
+│   ├── config.py       # Configuración
+│   └── main.py         # Punto de entrada de FastAPI
+├── models/
+│   └── pretrained/     # Modelos pre-entrenados
+├── static/             # Archivos estáticos
+│   ├── css/
+│   └── js/
+├── templates/          # Plantillas HTML
+├── uploads/            # Directorio para archivos subidos
+├── .gitignore          # Archivos ignorados por git
+├── requirements.txt    # Dependencias
+└── run.py              # Script para ejecutar la aplicación
 ```
 
-## Optimizaciones para AWS (Capa Gratuita)
+## Tecnologías Principales
 
-La aplicación incluye varias optimizaciones para aprovechar al máximo la capa gratuita de AWS:
+- **FastAPI**: Framework web moderno y rápido
+- **TensorFlow**: Motor de inferencia para modelos de ML
+- **OpenCV**: Procesamiento de imágenes
+- **MediaPipe**: Detección facial y análisis
+- **Face Recognition**: Análisis facial de alta precisión
+- **Pydantic**: Validación de datos
+- **Uvicorn**: Servidor ASGI
 
-1. **Compresión de imágenes**: Las imágenes JPEG se comprimen antes de subirse a S3, manteniendo la resolución pero reduciendo el tamaño de archivo.
+## Endpoints API
 
-2. **Estructura organizada**: Organización por sesiones y procesos para facilitar la limpieza.
+### Análisis Facial
+```
+POST /analyze
+```
+Acepta una imagen y devuelve análisis detallado que incluye:
+- Edad y género
+- Emociones detectadas
+- Estado de la piel
+- Indicadores de salud basados en la apariencia facial
 
-3. **Metadatos**: Añadimos metadatos con fechas para controlar la antigüedad de los archivos.
+### Análisis de Piel
 
-4. **Limpieza automática**: Opción para eliminar archivos antiguos automáticamente, configurable por días.
+#### Análisis de condición de piel
 
-5. **Clase de almacenamiento**: Uso de `REDUCED_REDUNDANCY` para archivos temporales.
+```python
+import requests
 
-6. **Modo de bajo consumo**: Opción para procesar imágenes a menor resolución.
+url = "http://localhost:8080/skin/analyze/condition"
+files = {"file": open("ruta/a/imagen.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
 
-## Documentación de la API
+print(f"Hidratación: {result['hydration']}")
+print(f"Textura: {result['texture']}")
+print(f"Poros: {result['pores']}")
+print(f"Grasa: {result['oiliness']}")
+```
 
-FastAPI genera automáticamente documentación interactiva de la API:
+#### Análisis de lunares
 
-- Swagger UI: `http://localhost:8080/docs`
-- ReDoc: `http://localhost:8080/redoc` 
+```python
+import requests
+
+url = "http://localhost:8080/skin/analyze/moles"
+files = {"file": open("ruta/a/imagen.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
+
+print(f"Total de lunares: {result['total_count']}")
+print(f"Lunares benignos: {result['benign_count']}")
+print(f"Lunares sospechosos: {result['suspicious_count']}")
+```
+
+#### Análisis de tono de piel
+
+```python
+import requests
+
+url = "http://localhost:8080/skin/analyze/tone"
+files = {"file": open("ruta/a/imagen.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
+
+print(f"Tipo Fitzpatrick: {result['fitzpatrick_type']}")
+print(f"Tono: {result['tone_name']}")
+```
+
+#### Análisis completo
+
+```python
+import requests
+
+url = "http://localhost:8080/skin/analyze/complete"
+files = {"file": open("ruta/a/imagen.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
+
+# Acceder a los diferentes componentes del análisis
+skin_condition = result['skin_condition']
+mole_analysis = result['mole_analysis']
+skin_tone = result['skin_tone']
+```
+
+#### Obtener recomendaciones
+
+```python
+import requests
+
+url = "http://localhost:8080/skin/recommendations"
+params = {
+    "hydration": 70,
+    "texture": 60,
+    "pores": 80,
+    "fitzpatrick_type": 3,
+    "has_suspicious_moles": True
+}
+response = requests.get(url, params=params)
+recommendations = response.json()
+
+for rec in recommendations:
+    print(f"- {rec}")
+```
