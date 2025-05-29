@@ -1,60 +1,129 @@
-# Sistema de Análisis Facial
+# PielSana IA
+
+## Resumen
+PielSana IA es un sistema de análisis facial que utiliza el modelo Derm Foundation de Google y otros modelos adicionales para analizar imágenes faciales y clasificar condiciones cutáneas. El sistema genera embeddings de 6144 dimensiones a partir de imágenes faciales y captura características densas relevantes para su análisis.
 
 ## Descripción
-Sistema avanzado de análisis facial y emocional que integra múltiples tecnologías para proporcionar análisis detallados de rostros en imágenes. El sistema utiliza técnicas de visión por computadora y aprendizaje profundo para detectar y analizar características faciales, emociones y atributos demográficos en tiempo real.
+PielSana IA se basa en el modelo Derm Foundation, un modelo de aprendizaje automático pre-entrenado para acelerar el desarrollo de IA en aplicaciones dermatológicas. Además, se incorporarán otros modelos para mejorar la funcionalidad y precisión del análisis. El sistema genera embeddings de 6144 dimensiones a partir de imágenes faciales y captura características densas relevantes para su análisis.
 
 ## Características Principales
 
-### Análisis Facial
-- Detección facial de alta precisión
-- Análisis de múltiples rostros simultáneos
-- Detección de orientación facial
-- Estimación de puntos faciales clave
+### Análisis de Imágenes Faciales
+- Generación de embeddings de 6144 dimensiones
+- Captura de características densas relevantes
+- Entrenamiento eficiente de modelos de IA
+- Requiere significativamente menos datos y computación
 
-### Análisis Demográfico
-- Estimación de edad con alta precisión
-- Detección de género
-- Análisis de etnia
-- Estimación de expresión facial
-
-### Análisis Emocional
-- Detección de 7 emociones básicas:
-  - Felicidad
-  - Tristeza
-  - Enojo
-  - Sorpresa
-  - Miedo
-  - Disgusto
-  - Neutral
-- Análisis de intensidad emocional
-- Seguimiento temporal de emociones
+### Aplicaciones
+- Clasificación de condiciones cutáneas (psoriasis, melanoma, dermatitis)
+- Puntuación de severidad o progresión de condiciones cutáneas
+- Identificación de partes del rostro
+- Determinación de calidad de imagen para evaluación dermatológica
 
 ### Características Técnicas
-- API RESTful con **FastAPI** 
-- Almacenamiento local de imágenes
-- Interfaz web moderna y responsiva
-- Procesamiento en tiempo real
-- Soporte para múltiples formatos de imagen
+- Modelos utilizados: Derm Foundation, otros modelos adicionales
+- Entrada: Imagen PNG de 448 x 448 píxeles
+- Salida: Vector de embedding de 6144 dimensiones
+- Entrenado con JAX para aprovechar hardware de última generación
+- Backend: FastAPI con arquitectura MVC
+- Modularidad: Cada modelo se encapsula en su propio módulo para facilitar el manejo y extensión
+
+## Estructura del Proyecto (MVC)
+
+```
+.
+├── app/
+│   ├── models/              # Capa de Modelo
+│   │   ├── __init__.py
+│   │   ├── base.py          # Modelo base abstracto
+│   │   ├── derm_foundation/ # Módulo para el modelo Derm Foundation
+│   │   │   ├── __init__.py
+│   │   │   ├── model.py     # Implementación del modelo Derm Foundation
+│   │   │   └── config.py    # Configuración específica del modelo
+│   │   ├── model1/          # Módulo para otro modelo adicional
+│   │   │   ├── __init__.py
+│   │   │   ├── model.py     # Implementación del modelo1
+│   │   │   └── config.py    # Configuración específica del modelo1
+│   │   └── model2/          # Módulo para otro modelo adicional
+│   │       ├── __init__.py
+│   │       ├── model.py     # Implementación del modelo2
+│   │       └── config.py    # Configuración específica del modelo2
+│   │
+│   ├── views/               # Capa de Vista
+│   │   ├── __init__.py
+│   │   ├── templates/       # Plantillas HTML
+│   │   │   ├── upload.html  # Página para cargar la imagen
+│   │   │   └── results.html # Página para mostrar los resultados
+│   │   └── static/          # Archivos estáticos
+│   │       ├── css/
+│   │       │   ├── upload.css # Estilos para la página de carga
+│   │       │   └── results.css # Estilos para la página de resultados
+│   │       └── js/
+│   │           ├── upload.js  # Scripts para la página de carga
+│   │           └── results.js # Scripts para la página de resultados
+│   │
+│   ├── controllers/         # Capa de Controlador
+│   │   ├── __init__.py
+│   │   ├── skin.py          # Controladores de análisis de piel
+│   │   └── base.py          # Controlador base abstracto
+│   │
+│   ├── services/            # Servicios de negocio
+│   │   ├── __init__.py
+│   │   ├── skin_service.py  # Lógica de negocio
+│   │   └── base.py          # Servicio base abstracto
+│   │
+│   ├── config/              # Configuración
+│   │   ├── __init__.py
+│   │   ├── settings.py      # Configuraciones de la aplicación
+│   │   └── logging.py       # Configuración de logging
+│   │
+│   ├── utils/               # Utilidades
+│   │   ├── __init__.py
+│   │   ├── helpers.py       # Funciones auxiliares
+│   │   └── image_utils.py   # Utilidades para procesamiento de imágenes
+│   │
+│   └── main.py              # Punto de entrada de FastAPI
+│
+├── tests/                   # Pruebas
+│   ├── __init__.py
+│   ├── models/              # Pruebas para modelos
+│   │   ├── test_derm_foundation.py
+│   │   ├── test_model1.py
+│   │   └── test_model2.py
+│   ├── controllers/         # Pruebas para controladores
+│   │   └── test_skin.py
+│   ├── services/            # Pruebas para servicios
+│   │   └── test_skin_service.py
+│   └── utils/               # Pruebas para utilidades
+│       └── test_helpers.py
+│
+├── data/                    # Datos (imágenes de ejemplo, datasets pequeños, etc.)
+│   └── sample_images/
+├── docs/                    # Documentación adicional
+│   └── architecture.md
+├── scripts/                 # Scripts de utilidad (ej. preprocesamiento, tareas de mantenimiento)
+│   └── preprocess_data.py
+│
+├── .env                     # Variables de entorno
+├── .gitignore               # Archivos ignorados por git
+├── requirements.txt         # Dependencias
+├── run.py                   # Script para ejecutar la aplicación
+├── Dockerfile               # Para construir la imagen Docker de la aplicación
+├── docker-compose.yml       # Para orquestación de contenedores Docker (opcional)
+├── LICENSE                  # Archivo de licencia del proyecto
+└── .github/                 # Configuración de GitHub (ej. workflows para CI/CD)
+    └── workflows/
+        └── main.yml
+```
 
 ## Requisitos del Sistema
 
 ### Dependencias del Sistema
 
-#### Ubuntu/Debian
+#### Ubuntu
 ```bash
 sudo apt-get update
 sudo apt-get install -y build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev python3.10 python3.10-dev python3.10-venv
-```
-
-#### CentOS/RHEL/Fedora
-```bash
-sudo dnf install -y gcc gcc-c++ cmake make pkgconfig libX11-devel atlas-devel gtk3-devel boost-devel boost-python3-devel python3.10 python3.10-devel
-```
-
-#### Arch Linux
-```bash
-sudo pacman -Syu
-sudo pacman -S base-devel cmake pkg-config libx11 atlas gtk3 boost boost-libs python python-pip
 ```
 
 #### macOS
@@ -76,15 +145,15 @@ brew install cmake
 
 #### Windows
 1. Instalar Visual Studio Build Tools (incluye C++ build tools)
-   - Descargar desde: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+   - Descargar desde: https://visualstudio.microsoft.com/visual-cpp-build-tools/  
    - Durante la instalación, seleccionar "Desarrollo para escritorio con C++"
 
 2. Instalar Python 3.10
-   - Descargar desde: https://www.python.org/downloads/release/python-31011/
+   - Descargar desde: https://www.python.org/downloads/release/python-31011/  
    - Asegurarse de marcar la opción "Add Python to PATH" durante la instalación
 
 3. Instalar CMake
-   - Descargar desde: https://cmake.org/download/
+   - Descargar desde: https://cmake.org/download/  
    - Asegurarse de agregar CMake al PATH del sistema
 
 4. PowerShell (Administrador):
@@ -96,20 +165,11 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 choco install cmake -y
 ```
 
-### Python 3.10
-El proyecto está optimizado para Python 3.10. Se recomienda usar esta versión específica.
-
 ## Instalación
 
-1. Clonar el repositorio:
-```bash
-git clone [URL_DEL_REPOSITORIO]
-cd [NOMBRE_DEL_DIRECTORIO]
-```
+1. Crear y activar entorno virtual:
 
-2. Crear y activar entorno virtual:
-
-**Ubuntu/Debian:**
+**Ubuntu:**
 ```bash
 python3.10 -m venv venv
 source venv/bin/activate
@@ -126,7 +186,8 @@ source venv/bin/activate
 py -3.10 -m venv venv
 venv\Scripts\activate
 ```
-3. Instalar dependencias:
+
+2. Instalar dependencias:
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
@@ -143,132 +204,117 @@ El servidor estará disponible en:
 - API: http://localhost:8080
 - Documentación API: http://localhost:8080/docs
 
-## Estructura del Proyecto
-
-```
-.
-├── app/
-│   ├── analyzers/      # Módulos de análisis facial
-│   ├── models/         # Modelos de datos
-│   ├── routers/        # Rutas de la API
-│   ├── schemas/        # Esquemas de datos
-│   ├── services/       # Servicios
-│   ├── utils/          # Utilidades
-│   ├── config.py       # Configuración
-│   └── main.py         # Punto de entrada de FastAPI
-├── models/
-│   └── pretrained/     # Modelos pre-entrenados
-├── static/             # Archivos estáticos
-│   ├── css/
-│   └── js/
-├── templates/          # Plantillas HTML
-├── uploads/            # Directorio para archivos subidos
-├── .gitignore          # Archivos ignorados por git
-├── requirements.txt    # Dependencias
-└── run.py              # Script para ejecutar la aplicación
-```
-
-## Tecnologías Principales
-
-- **FastAPI**: Framework web moderno y rápido
-- **TensorFlow**: Motor de inferencia para modelos de ML
-- **OpenCV**: Procesamiento de imágenes
-- **MediaPipe**: Detección facial y análisis
-- **Face Recognition**: Análisis facial de alta precisión
-- **Pydantic**: Validación de datos
-- **Uvicorn**: Servidor ASGI
-
-## Endpoints API
-
-### Análisis Facial
-```
-POST /analyze
-```
-Acepta una imagen y devuelve análisis detallado que incluye:
-- Edad y género
-- Emociones detectadas
-- Estado de la piel
-- Indicadores de salud basados en la apariencia facial
-
-### Análisis de Piel
-
-#### Análisis de condición de piel
+## Ejemplo de Uso
 
 ```python
-import requests
+from PIL import Image
+from io import BytesIO
+from huggingface_hub import from_pretrained_keras
+import tensorflow as tf
 
-url = "http://localhost:8080/skin/analyze/condition"
-files = {"file": open("ruta/a/imagen.jpg", "rb")}
-response = requests.post(url, files=files)
-result = response.json()
+# Cargar la imagen
+img = Image.open("imagen.png")
+buf = BytesIO()
+img.convert('RGB').save(buf, 'PNG')
+image_bytes = buf.getvalue()
 
-print(f"Hidratación: {result['hydration']}")
-print(f"Textura: {result['texture']}")
-print(f"Poros: {result['pores']}")
-print(f"Grasa: {result['oiliness']}")
+# Formatear entrada
+input_tensor = tf.train.Example(features=tf.train.Features(
+    feature={'image/encoded': tf.train.Feature(
+        bytes_list=tf.train.BytesList(value=[image_bytes]))
+    })).SerializeToString()
+
+# Cargar el modelo desde Hugging Face Hub
+loaded_model = from_pretrained_keras("google/derm-foundation")
+
+# Realizar inferencia
+infer = loaded_model.signatures["serving_default"]
+output = infer(inputs=tf.constant([input_tensor]))
+
+# Extraer el vector de embedding
+embedding_vector = output['embedding'].numpy().flatten()
 ```
 
-#### Análisis de lunares
+## Limitaciones
 
-```python
-import requests
+- La calidad puede degradarse en condiciones extremas (fotos muy claras u oscuras)
+- Entrenado principalmente con datos de Estados Unidos, Colombia y Australia
+- No genera predicciones o diagnósticos por sí mismo
+- Requiere validación para aplicaciones específicas
 
-url = "http://localhost:8080/skin/analyze/moles"
-files = {"file": open("ruta/a/imagen.jpg", "rb")}
-response = requests.post(url, files=files)
-result = response.json()
+## Variables de Entorno
+Configura las siguientes variables de entorno en tu archivo `.env`:
 
-print(f"Total de lunares: {result['total_count']}")
-print(f"Lunares benignos: {result['benign_count']}")
-print(f"Lunares sospechosos: {result['suspicious_count']}")
+```env
+# Ejemplo de variables de entorno
+API_KEY=your_api_key_here
+MODEL_PATH=path_to_your_model
 ```
 
-#### Análisis de tono de piel
+## Gestión de Imágenes
+Las imágenes subidas se procesan y luego se eliminan para garantizar la privacidad y seguridad de los datos.
 
-```python
-import requests
+## Interfaces de Usuario
 
-url = "http://localhost:8080/skin/analyze/tone"
-files = {"file": open("ruta/a/imagen.jpg", "rb")}
-response = requests.post(url, files=files)
-result = response.json()
+### Página de Carga de Imagen (`upload.html`)
+- **Descripción:** Permite a los usuarios cargar una imagen facial para su análisis.
+- **Colores:** Tonos de verde y azul para una apariencia saludable y relajante.
+- **Elementos:**
+  - Un formulario para subir la imagen.
+  - Botón para enviar la imagen.
+  - Mensajes de estado (éxito/error).
 
-print(f"Tipo Fitzpatrick: {result['fitzpatrick_type']}")
-print(f"Tono: {result['tone_name']}")
+### Página de Resultados (`results.html`)
+- **Descripción:** Muestra los resultados del análisis de la imagen cargada.
+- **Colores:** Tonos de verde y azul para una apariencia saludable y relajante.
+- **Elementos:**
+  - Información sobre el análisis (condiciones detectadas, severidad, etc.).
+  - Gráficos o visualizaciones relevantes.
+  - Botón para volver a cargar una nueva imagen.
+
+## Modularidad de Modelos
+Cada modelo se encapsula en su propio módulo dentro del directorio `models` para facilitar el manejo y extensión del sistema. Esto permite agregar, modificar o eliminar modelos sin afectar el resto del sistema.
+
+### Ejemplo de Estructura de Modelos
+```
+models/
+├── __init__.py
+├── base.py         # Modelo base abstracto
+├── derm_foundation/ # Módulo para el modelo Derm Foundation
+│   ├── __init__.py
+│   ├── model.py     # Implementación del modelo Derm Foundation
+│   └── config.py    # Configuración específica del modelo
+├── model1/          # Módulo para otro modelo adicional
+│   ├── __init__.py
+│   ├── model.py     # Implementación del modelo1
+│   └── config.py    # Configuración específica del modelo1
+└── model2/          # Módulo para otro modelo adicional
+    ├── __init__.py
+    ├── model.py     # Implementación del modelo2
+    └── config.py    # Configuración específica del modelo2
 ```
 
-#### Análisis completo
+### Recomendación de Modelos Adicionales
+Se recomienda agregar 2 o 3 modelos adicionales para mejorar la funcionalidad y precisión del sistema. Algunas opciones podrían ser:
+- **Modelo para la detección de acné:** Para identificar y clasificar diferentes tipos de acné.
+- **Modelo para la detección de arrugas:** Para evaluar la edad y el estado de la piel.
+- **Modelo para la detección de manchas oscuras:** Para identificar y clasificar manchas oscuras en la piel.
 
-```python
-import requests
+Estos modelos adicionales pueden proporcionar una visión más completa y precisa del estado de la piel del usuario.
 
-url = "http://localhost:8080/skin/analyze/complete"
-files = {"file": open("ruta/a/imagen.jpg", "rb")}
-response = requests.post(url, files=files)
-result = response.json()
+## Licencia
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
-# Acceder a los diferentes componentes del análisis
-skin_condition = result['skin_condition']
-mole_analysis = result['mole_analysis']
-skin_tone = result['skin_tone']
-```
+## Contacto
+Para cualquier consulta o colaboración, contacta a:
+- Nombre: [Tu Nombre]
+- Email: [tu.email@example.com]
+- GitHub: [github.com/tu_usuario]
 
-#### Obtener recomendaciones
-
-```python
-import requests
-
-url = "http://localhost:8080/skin/recommendations"
-params = {
-    "hydration": 70,
-    "texture": 60,
-    "pores": 80,
-    "fitzpatrick_type": 3,
-    "has_suspicious_moles": True
-}
-response = requests.get(url, params=params)
-recommendations = response.json()
-
-for rec in recommendations:
-    print(f"- {rec}")
-```
+## Contribución
+Para contribuir a este proyecto, sigue estos pasos:
+1. Haz un fork del repositorio
+2. Crea tu rama (`git checkout -b feature/AmazingFeature`)
+3. Haz tus cambios (`git commit -m 'Añadir alguna característica AmazingFeature'`)
+4. Empuja a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
