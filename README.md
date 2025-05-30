@@ -371,3 +371,6 @@ Para contribuir a este proyecto, sigue estos pasos:
 > El código del proyecto fuerza el uso de CPU en la configuración (`app/config/model_config.py`).
 
 > **Nota:** Cuando ejecutes la aplicación por primera vez, el modelo de Hugging Face se descargará automáticamente y se guardará en la carpeta local del proyecto (`models/cache`). Si el modelo ya existe en esa carpeta, no se volverá a descargar. No es necesario realizar ninguna descarga manual.
+
+> **Nota sobre la versión de Keras:**
+> Este proyecto utiliza `keras==2.13.1` porque es la última versión que permite cargar modelos en formato SavedModel (como el modelo `google/derm-foundation` de Hugging Face) usando `load_model()`. Keras 3 **ya no soporta** cargar modelos SavedModel directamente, solo permite cargar modelos en formato `.keras` o `.h5`. Si en el futuro los modelos de Hugging Face se publican en formato `.keras` o `.h5`, o si migras tu propio flujo de trabajo a estos formatos, podrás actualizar a Keras 3. Por ahora, para compatibilidad y funcionamiento correcto, se recomienda mantener la versión 2.13.1.
