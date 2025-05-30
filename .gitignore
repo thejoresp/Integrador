@@ -69,4 +69,8 @@ uploads/
 uploads/**/*
 !uploads/.gitkeep
 
-HUGGING_FACE_HUB_TOKEN=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
+# Frontend (React/Vite)
+frontend/node_modules/
+frontend/dist/
+
+# (¡IMPORTANTE! No debe haber tokens ni claves aquí)
