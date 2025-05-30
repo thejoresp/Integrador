@@ -243,13 +243,18 @@ embedding_vector = output['embedding'].numpy().flatten()
 - Requiere validación para aplicaciones específicas
 
 ## Variables de Entorno
-Configura las siguientes variables de entorno en tu archivo `.env`:
+
+Configura las siguientes variables de entorno en tu archivo `.env`. Puedes usar el archivo `.env.example` como plantilla:
 
 ```env
-# Ejemplo de variables de entorno
-API_KEY=your_api_key_here
-MODEL_PATH=path_to_your_model
+# .env.example
+HF_TOKEN=tu_token_de_huggingface_aqui
+# API_KEY=tu_api_key_aqui (si tu backend requiere autenticación, opcional)
+# MODEL_PATH=path_personalizado_al_modelo (opcional, por defecto se usa la ruta interna)
 ```
+
+1. Copia `.env.example` a `.env` y completa los valores necesarios.
+2. **No compartas tu token real en repositorios públicos.**
 
 ## Configuración de Hugging Face y Token de Acceso
 
