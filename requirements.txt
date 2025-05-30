@@ -4,6 +4,8 @@ jinja2
 transformers
 Pillow
 tensorflow
-torch
+# Por defecto, instala torch solo para CPU. Si necesitas soporte CUDA (GPU), revisa el README.
+torch --index-url https://download.pytorch.org/whl/cpu
 python-multipart
-python-dotenv 
+python-dotenv
+huggingface_hub

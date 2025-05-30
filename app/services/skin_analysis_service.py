@@ -2,17 +2,18 @@ from PIL import Image
 from io import BytesIO
 import tensorflow as tf
 from huggingface_hub import from_pretrained_keras
+from app.config.model_config import MODEL_CONFIG
 
-MODEL_NAME = "google/derm-foundation"
+MODEL_NAME = MODEL_CONFIG["name"]
 LOADED_MODEL = None
 
 def load_skin_model():
-    """Carga el modelo Keras de Hugging Face una sola vez."""
+    """Carga el modelo Keras de Hugging Face una sola vez y lo guarda en la carpeta local del proyecto."""
     global LOADED_MODEL
     if LOADED_MODEL is None:
         try:
             print(f"Cargando modelo {MODEL_NAME}...")
-            LOADED_MODEL = from_pretrained_keras(MODEL_NAME)
+            LOADED_MODEL = from_pretrained_keras(MODEL_NAME, cache_dir=MODEL_CONFIG["cache_dir"])
             print("Modelo cargado exitosamente.")
         except Exception as e:
             print(f"Error cargando el modelo {MODEL_NAME}: {e}")

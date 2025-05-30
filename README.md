@@ -251,6 +251,40 @@ API_KEY=your_api_key_here
 MODEL_PATH=path_to_your_model
 ```
 
+## Configuración de Hugging Face y Token de Acceso
+
+Para descargar modelos desde Hugging Face Hub (por ejemplo, `google/derm-foundation`), es necesario un token de acceso, especialmente si el modelo es privado o si necesitas evitar límites de descarga.
+
+### 1. Obtener tu token de Hugging Face
+1. Crea una cuenta (si no tienes) en https://huggingface.co/join
+2. Ve a tu perfil y selecciona "Access Tokens" o "Tokens de acceso": https://huggingface.co/settings/tokens
+3. Haz clic en "New token" (Nuevo token), asígnale un nombre y selecciona el scope "Read" (lectura).
+4. Copia el token generado.
+
+### 2. Configurar el token en el archivo `.env`
+Agrega la siguiente línea en tu archivo `.env` (o en `.env.example` para compartir la plantilla):
+
+```env
+HF_TOKEN=tu_token_de_huggingface_aqui
+```
+
+> **Nota:** No compartas tu token real en repositorios públicos.
+
+### 3. Instalar la librería necesaria
+Asegúrate de tener instalada la librería `huggingface_hub`:
+
+```bash
+pip install huggingface_hub
+```
+
+Si usas `requirements.txt`, puedes agregarla allí:
+```
+huggingface_hub
+```
+
+### 4. ¿Cómo se usa el token en el proyecto?
+El token se carga automáticamente desde el archivo `.env` y se utiliza al descargar modelos desde Hugging Face. El archivo `app/config/model_config.py` contiene la lógica para leer la variable `HF_TOKEN` y configurar el entorno.
+
 ## Gestión de Imágenes
 Las imágenes subidas se procesan y luego se eliminan para garantizar la privacidad y seguridad de los datos.
 
@@ -318,3 +352,22 @@ Para contribuir a este proyecto, sigue estos pasos:
 3. Haz tus cambios (`git commit -m 'Añadir alguna característica AmazingFeature'`)
 4. Empuja a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
+
+> **Nota sobre TensorFlow y Torch:**
+> Este proyecto está pensado para ejecutarse en CPU. Por defecto, los paquetes `tensorflow` y `torch` que se instalan desde PyPI son compatibles con CPU. No es necesario instalar versiones específicas para GPU. Si tu entorno tiene una GPU y deseas forzar el uso de CPU, asegúrate de instalar:
+>
+> - Para TensorFlow:
+>   ```bash
+>   pip install tensorflow
+>   ```
+>   (No instales `tensorflow-gpu`)
+>
+> - Para PyTorch:
+>   ```bash
+>   pip install torch
+>   ```
+>   (No instales versiones con soporte CUDA a menos que lo requieras explícitamente)
+>
+> El código del proyecto fuerza el uso de CPU en la configuración (`app/config/model_config.py`).
+
+> **Nota:** Cuando ejecutes la aplicación por primera vez, el modelo de Hugging Face se descargará automáticamente y se guardará en la carpeta local del proyecto (`models/cache`). Si el modelo ya existe en esa carpeta, no se volverá a descargar. No es necesario realizar ninguna descarga manual.
