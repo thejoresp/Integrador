@@ -3,12 +3,10 @@ uvicorn
 jinja2
 transformers
 Pillow
-tensorflow==2.13.0
-# Por defecto, instala torch solo para CPU. Si necesitas soporte CUDA (GPU), revisa el README.
-torch==2.1.2 --index-url https://download.pytorch.org/whl/cpu
-keras==2.13.1
+tensorflow==2.19.0
 python-multipart
 python-dotenv
 huggingface_hub
 # Dependencias adicionales para evitar conflictos de versiones
 pydantic==1.10.15
+torch==2.3.0 --index-url https://download.pytorch.org/whl/cpu

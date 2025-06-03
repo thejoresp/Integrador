@@ -1,25 +1,27 @@
 from PIL import Image
 from io import BytesIO
 import tensorflow as tf
-from huggingface_hub import from_pretrained_keras
+import keras
 from app.config.model_config import MODEL_CONFIG
 
 MODEL_NAME = MODEL_CONFIG["name"]
+MODEL_PATH = MODEL_CONFIG["model_path"]
 LOADED_MODEL = None
 
 def load_skin_model():
-    """Carga el modelo Keras de Hugging Face una sola vez y lo guarda en la carpeta local del proyecto."""
+    """Carga el modelo SavedModel como TFSMLayer para inferencia en Keras 3+ (opción 1)."""
     global LOADED_MODEL
     if LOADED_MODEL is None:
         try:
-            print(f"Cargando modelo {MODEL_NAME}...")
-            LOADED_MODEL = from_pretrained_keras(MODEL_NAME, cache_dir=MODEL_CONFIG["cache_dir"])
-            print("Modelo cargado exitosamente.")
+            print(f"Cargando modelo SavedModel desde {MODEL_PATH}...")
+            LOADED_MODEL = keras.layers.TFSMLayer(
+                MODEL_PATH,
+                call_endpoint="serving_default"  # Cambia si tu endpoint es diferente
+            )
+            print("Modelo cargado exitosamente como TFSMLayer.")
         except Exception as e:
-            print(f"Error cargando el modelo {MODEL_NAME}: {e}")
-            # Aquí podrías manejar el error más robustamente, 
-            # por ejemplo, reintentar o lanzar una excepción específica.
-            LOADED_MODEL = None # Asegurarse que no se use un modelo parcialmente cargado
+            print(f"Error cargando el modelo SavedModel: {e}")
+            LOADED_MODEL = None
     return LOADED_MODEL
 
 def get_image_embeddings(image_bytes: bytes):
@@ -59,10 +61,8 @@ def get_image_embeddings(image_bytes: bytes):
                 bytes_list=tf.train.BytesList(value=[formatted_image_bytes]))
             })).SerializeToString()
 
-        # Inferencia
-        # La documentación del modelo en HuggingFace sugiere que la signatura es "serving_default"
-        infer = model.signatures["serving_default"]
-        output = infer(inputs=tf.constant([input_tensor_example]))
+        # Inferencia usando TFSMLayer
+        output = model(tf.constant([input_tensor_example]))
         
         # Extraer el vector de embeddings
         # La salida es un diccionario, y el embedding está bajo la clave 'embedding'

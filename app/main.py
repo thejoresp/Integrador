@@ -3,6 +3,7 @@ import uvicorn
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 import os
+from fastapi.middleware.cors import CORSMiddleware
 
 # Cargar variables de entorno del archivo .env
 # Es bueno hacerlo lo antes posible
@@ -16,6 +17,15 @@ app = FastAPI(
     title="PielSana IA",
     description="Sistema de análisis facial para clasificar condiciones cutáneas.",
     version="0.1.0"
+)
+
+# Habilitar CORS para el frontend en desarrollo
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Cambia esto según el origen de tu frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Endpoint de prueba

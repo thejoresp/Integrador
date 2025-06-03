@@ -18,7 +18,7 @@ MODEL_CONFIG = {
     "image_size": (448, 448),
     "batch_size": 1,
     "cache_dir": os.path.join(BASE_DIR, "models", "cache"),  # Directorio absoluto para cachear los modelos
-    "model_path": os.path.join(BASE_DIR, "models", "cache", "derm-foundation")  # Ruta específica para el modelo
+    "model_path": os.path.join(BASE_DIR, "models", "cache", "models--google--derm-foundation", "snapshots", "a16a6ab4f87888948fe248136e697ed28146a1c6")  # Ruta específica para el modelo
 }
 
 # Token de Hugging Face
