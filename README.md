@@ -1,368 +1,212 @@
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 # PielSana IA
 
-## Resumen
-PielSana IA es un sistema de análisis facial que utiliza el modelo Derm Foundation de Google y otros modelos adicionales para analizar imágenes faciales y clasificar condiciones cutáneas. El sistema genera embeddings de 6144 dimensiones a partir de imágenes faciales y captura características densas relevantes para su análisis.
+## Cuidando tu piel con inteligencia artificial
 
-## Descripción
-PielSana IA se basa en el modelo Derm Foundation, un modelo de aprendizaje automático pre-entrenado para acelerar el desarrollo de IA en aplicaciones dermatológicas. Además, se incorporarán otros modelos para mejorar la funcionalidad y precisión del análisis. El sistema genera embeddings de 6144 dimensiones a partir de imágenes faciales y captura características densas relevantes para su análisis.
+La piel es el órgano más grande de nuestro cuerpo y su salud es fundamental para nuestro bienestar físico y emocional. Sin embargo, muchas personas no tienen acceso fácil a un dermatólogo o a herramientas confiables para evaluar el estado de su piel.
+**PielSana IA** nace con la misión de acercar la tecnología de inteligencia artificial a la vida cotidiana, permitiendo que cualquier persona pueda analizar el estado de su piel de manera rápida, privada y sencilla, desde cualquier lugar.
 
-## Características Principales
+Nuestra plataforma ayuda a detectar y monitorear condiciones cutáneas frecuentes como el acné, la rosácea, las manchas solares y atípicas, la urticaria y las quemaduras. Así, buscamos empoderar a los usuarios para que tomen decisiones informadas sobre su salud y, si es necesario, consulten a un profesional con mayor información.
 
-### Análisis de Imágenes Faciales
-- Generación de embeddings de 6144 dimensiones
-- Captura de características densas relevantes
-- Entrenamiento eficiente de modelos de IA
-- Requiere significativamente menos datos y computación
+---
 
-### Aplicaciones
-- Clasificación de condiciones cutáneas (psoriasis, melanoma, dermatitis)
-- Puntuación de severidad o progresión de condiciones cutáneas
-- Identificación de partes del rostro
-- Determinación de calidad de imagen para evaluación dermatológica
+## ¿Cómo funciona PielSana IA?
 
-### Características Técnicas
-- Modelos utilizados: Derm Foundation, otros modelos adicionales
-- Entrada: Imagen PNG de 448 x 448 píxeles
-- Salida: Vector de embedding de 6144 dimensiones
-- Entrenado con JAX para aprovechar hardware de última generación
-- Backend: FastAPI con arquitectura MVC
-- Modularidad: Cada modelo se encapsula en su propio módulo para facilitar el manejo y extensión
+1. **Sube una foto de tu rostro o zona de interés** a través de una interfaz web simple y segura.
+2. **La imagen es analizada por un sistema de inteligencia artificial** que extrae información relevante sobre tu piel.
+3. **Recibes un informe inmediato** sobre posibles condiciones cutáneas detectadas, que puedes usar como referencia para tu autocuidado o para consultar con un especialista.
 
-## Estructura del Proyecto (MVC)
+> **Privacidad:** Tus imágenes se procesan de forma temporal y se eliminan tras el análisis. No almacenamos datos personales.
 
-```
-.
-├── app/
-│   ├── models/              # Capa de Modelo
-│   │   ├── __init__.py
-│   │   ├── base.py          # Modelo base abstracto
-│   │   ├── derm_foundation/ # Módulo para el modelo Derm Foundation
-│   │   │   ├── __init__.py
-│   │   │   ├── model.py     # Implementación del modelo Derm Foundation
-│   │   │   └── config.py    # Configuración específica del modelo
-│   │   ├── model1/          # Módulo para otro modelo adicional
-│   │   │   ├── __init__.py
-│   │   │   ├── model.py     # Implementación del modelo1
-│   │   │   └── config.py    # Configuración específica del modelo1
-│   │   └── model2/          # Módulo para otro modelo adicional
-│   │       ├── __init__.py
-│   │       ├── model.py     # Implementación del modelo2
-│   │       └── config.py    # Configuración específica del modelo2
-│   │
-│   ├── views/               # Capa de Vista
-│   │   ├── __init__.py
-│   │   ├── templates/       # Plantillas HTML
-│   │   │   ├── upload.html  # Página para cargar la imagen
-│   │   │   └── results.html # Página para mostrar los resultados
-│   │   └── static/          # Archivos estáticos
-│   │       ├── css/
-│   │       │   ├── upload.css # Estilos para la página de carga
-│   │       │   └── results.css # Estilos para la página de resultados
-│   │       └── js/
-│   │           ├── upload.js  # Scripts para la página de carga
-│   │           └── results.js # Scripts para la página de resultados
-│   │
-│   ├── controllers/         # Capa de Controlador
-│   │   ├── __init__.py
-│   │   ├── skin.py          # Controladores de análisis de piel
-│   │   └── base.py          # Controlador base abstracto
-│   │
-│   ├── services/            # Servicios de negocio
-│   │   ├── __init__.py
-│   │   ├── skin_service.py  # Lógica de negocio
-│   │   └── base.py          # Servicio base abstracto
-│   │
-│   ├── config/              # Configuración
-│   │   ├── __init__.py
-│   │   ├── settings.py      # Configuraciones de la aplicación
-│   │   └── logging.py       # Configuración de logging
-│   │
-│   ├── utils/               # Utilidades
-│   │   ├── __init__.py
-│   │   ├── helpers.py       # Funciones auxiliares
-│   │   └── image_utils.py   # Utilidades para procesamiento de imágenes
-│   │
-│   └── main.py              # Punto de entrada de FastAPI
-│
-├── tests/                   # Pruebas
-│   ├── __init__.py
-│   ├── models/              # Pruebas para modelos
-│   │   ├── test_derm_foundation.py
-│   │   ├── test_model1.py
-│   │   └── test_model2.py
-│   ├── controllers/         # Pruebas para controladores
-│   │   └── test_skin.py
-│   ├── services/            # Pruebas para servicios
-│   │   └── test_skin_service.py
-│   └── utils/               # Pruebas para utilidades
-│       └── test_helpers.py
-│
-├── data/                    # Datos (imágenes de ejemplo, datasets pequeños, etc.)
-│   └── sample_images/
-├── docs/                    # Documentación adicional
-│   └── architecture.md
-├── scripts/                 # Scripts de utilidad (ej. preprocesamiento, tareas de mantenimiento)
-│   └── preprocess_data.py
-│
-├── .env                     # Variables de entorno
-├── .gitignore               # Archivos ignorados por git
-├── requirements.txt         # Dependencias
-├── run.py                   # Script para ejecutar la aplicación
-├── Dockerfile               # Para construir la imagen Docker de la aplicación
-├── docker-compose.yml       # Para orquestación de contenedores Docker (opcional)
-├── LICENSE                  # Archivo de licencia del proyecto
-└── .github/                 # Configuración de GitHub (ej. workflows para CI/CD)
-    └── workflows/
-        └── main.yml
+---
+
+## Casos de Uso
+
+- Autoevaluación y monitoreo de condiciones cutáneas.
+- Apoyo para la consulta dermatológica, llevando información objetiva al profesional.
+- Seguimiento de la evolución de lesiones o tratamientos.
+- Herramienta educativa para conocer más sobre la salud de la piel.
+
+### Principales Condiciones Cutáneas Analizadas
+
+- **Acné:** Identificación y clasificación de diferentes tipos de lesiones acneicas.
+- **Rosácea:** Detección de enrojecimiento, pápulas y telangiectasias.
+- **Manchas solares y lesiones atípicas:** Evaluación de hiperpigmentaciones y lesiones sospechosas.
+- **Urticaria:** Reconocimiento de habones y patrones de inflamación aguda.
+- **Quemaduras:** Clasificación de quemaduras superficiales y profundas.
+
+---
+
+## ¿Quién puede usarlo?
+
+- Personas que desean cuidar su piel y detectar problemas a tiempo.
+- Profesionales de la salud que buscan una herramienta de apoyo.
+- Investigadores interesados en el análisis automatizado de imágenes dermatológicas.
+
+---
+
+## Tabla de Contenido
+
+- [PielSana IA](#pielsana-ia)
+  - [Cuidando tu piel con inteligencia artificial](#cuidando-tu-piel-con-inteligencia-artificial)
+  - [¿Cómo funciona PielSana IA?](#cómo-funciona-pielsana-ia)
+  - [Casos de Uso](#casos-de-uso)
+    - [Principales Condiciones Cutáneas Analizadas](#principales-condiciones-cutáneas-analizadas)
+  - [¿Quién puede usarlo?](#quién-puede-usarlo)
+  - [Tabla de Contenido](#tabla-de-contenido)
+  - [Características Técnicas](#características-técnicas)
+  - [Tabla de Tecnologías](#tabla-de-tecnologías)
+  - [Diagrama de Arquitectura](#diagrama-de-arquitectura)
+  - [Capturas de Pantalla / GIF de Uso](#capturas-de-pantalla--gif-de-uso)
+  - [Instalación y Uso](#instalación-y-uso)
+    - [Requisitos](#requisitos)
+    - [Backend](#backend)
+    - [Frontend](#frontend)
+  - [Ejemplo de Request/Response de la API](#ejemplo-de-requestresponse-de-la-api)
+  - [FAQ - Preguntas Frecuentes](#faq---preguntas-frecuentes)
+  - [Reconocimientos y Créditos](#reconocimientos-y-créditos)
+  - [Política de Privacidad](#política-de-privacidad)
+  - [Contribución](#contribución)
+  - [Licencia y Contacto](#licencia-y-contacto)
+
+---
+
+## Características Técnicas
+
+PielSana IA combina lo último en inteligencia artificial y desarrollo web para ofrecer una experiencia robusta y segura:
+
+- **Frontend:** Interfaz web desarrollada en React/Vite, fácil de usar y accesible desde cualquier dispositivo.
+- **Backend:** API en FastAPI que gestiona la recepción y análisis de imágenes.
+- **Modelos de IA:** Utiliza el modelo Derm Foundation de Google (Hugging Face) como base para el análisis, generando representaciones avanzadas (embeddings) de las imágenes. El sistema está preparado para integrar modelos adicionales en el futuro.
+- **Privacidad:** Procesamiento temporal de imágenes, sin almacenamiento de datos personales.
+- **Extensibilidad:** Arquitectura modular que permite agregar nuevos modelos y funcionalidades fácilmente.
+
+## Tabla de Tecnologías
+
+| Capa         | Tecnología                                 |
+|--------------|--------------------------------------------|
+| Frontend     | React, Vite, TypeScript, TailwindCSS       |
+| Backend      | FastAPI, Python, TensorFlow, Keras         |
+| Modelos      | Derm Foundation (Hugging Face), futuros modelos |
+| Infraestructura | Docker, GitHub Actions, .env            |
+
+## Diagrama de Arquitectura
+
+<!-- Puedes reemplazar este bloque por un diagrama real (Mermaid o imagen) -->
+```mermaid
+flowchart TD
+    Usuario -->|Carga imagen| Frontend
+    Frontend -->|Envía imagen| Backend
+    Backend -->|Procesa| ModeloDermFoundation
+    ModeloDermFoundation -->|Embedding| Backend
+    Backend -->|Resultados| Frontend
 ```
 
-## Requisitos del Sistema
+## Capturas de Pantalla / GIF de Uso
 
-### Dependencias del Sistema
+<!-- Agrega aquí imágenes o GIFs mostrando el flujo de uso -->
+<!-- ![Ejemplo de uso](docs/ejemplo_uso.gif) -->
 
-#### Ubuntu
+---
+
+## Instalación y Uso
+
+### Requisitos
+
+- Python 3.10+
+- Node.js 18+ (para el frontend)
+- Docker (opcional)
+
+### Backend
+
 ```bash
-sudo apt-get update
-sudo apt-get install -y build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev python3.10 python3.10-dev python3.10-venv
-```
-
-#### macOS
-```bash
-# Instalar Homebrew si no está instalado
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Crear entorno virtual
+python3.10 -m venv venv
+source venv/bin/activate
 
 # Instalar dependencias
-brew update
-brew install cmake pkg-config boost boost-python3
-brew install opencv
-
-# Instalar Python 3.10
-brew install python@3.10
-
-# Para instalar dlib correctamente
-brew install cmake
-```
-
-#### Windows
-1. Instalar Visual Studio Build Tools (incluye C++ build tools)
-   - Descargar desde: https://visualstudio.microsoft.com/visual-cpp-build-tools/  
-   - Durante la instalación, seleccionar "Desarrollo para escritorio con C++"
-
-2. Instalar Python 3.10
-   - Descargar desde: https://www.python.org/downloads/release/python-31011/  
-   - Asegurarse de marcar la opción "Add Python to PATH" durante la instalación
-
-3. Instalar CMake
-   - Descargar desde: https://cmake.org/download/  
-   - Asegurarse de agregar CMake al PATH del sistema
-
-4. PowerShell (Administrador):
-```powershell
-# Instalar chocolatey (opcional pero recomendado)
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-# Con chocolatey instalado:
-choco install cmake -y
-```
-
-## Instalación
-
-1. Crear y activar entorno virtual:
-
-**Ubuntu:**
-```bash
-python3.10 -m venv venv
-source venv/bin/activate
-```
-
-**macOS:**
-```bash
-python3.10 -m venv venv
-source venv/bin/activate
-```
-
-**Windows:**
-```bash
-py -3.10 -m venv venv
-venv\Scripts\activate
-```
-
-2. Instalar dependencias:
-```bash
 pip install --upgrade pip
 pip install -r requirements.txt
-```
 
-## Ejecución
-
-1. Iniciar el servidor:
-```bash
+# Iniciar el servidor
 python run.py
 ```
+La API estará disponible en http://localhost:8080
 
-El servidor estará disponible en:
-- API: http://localhost:8080
-- Documentación API: http://localhost:8080/docs
-
-## Ejemplo de Uso
-
-```python
-from PIL import Image
-from io import BytesIO
-from huggingface_hub import from_pretrained_keras
-import tensorflow as tf
-
-# Cargar la imagen
-img = Image.open("imagen.png")
-buf = BytesIO()
-img.convert('RGB').save(buf, 'PNG')
-image_bytes = buf.getvalue()
-
-# Formatear entrada
-input_tensor = tf.train.Example(features=tf.train.Features(
-    feature={'image/encoded': tf.train.Feature(
-        bytes_list=tf.train.BytesList(value=[image_bytes]))
-    })).SerializeToString()
-
-# Cargar el modelo desde Hugging Face Hub
-loaded_model = from_pretrained_keras("google/derm-foundation")
-
-# Realizar inferencia
-infer = loaded_model.signatures["serving_default"]
-output = infer(inputs=tf.constant([input_tensor]))
-
-# Extraer el vector de embedding
-embedding_vector = output['embedding'].numpy().flatten()
-```
-
-## Limitaciones
-
-- La calidad puede degradarse en condiciones extremas (fotos muy claras u oscuras)
-- Entrenado principalmente con datos de Estados Unidos, Colombia y Australia
-- No genera predicciones o diagnósticos por sí mismo
-- Requiere validación para aplicaciones específicas
-
-## Variables de Entorno
-
-Configura las siguientes variables de entorno en tu archivo `.env`. Puedes usar el archivo `.env.example` como plantilla:
-
-```env
-# .env.example
-HF_TOKEN=tu_token_de_huggingface_aqui
-# API_KEY=tu_api_key_aqui (si tu backend requiere autenticación, opcional)
-# MODEL_PATH=path_personalizado_al_modelo (opcional, por defecto se usa la ruta interna)
-```
-
-1. Copia `.env.example` a `.env` y completa los valores necesarios.
-2. **No compartas tu token real en repositorios públicos.**
-
-## Configuración de Hugging Face y Token de Acceso
-
-Para descargar modelos desde Hugging Face Hub (por ejemplo, `google/derm-foundation`), es necesario un token de acceso, especialmente si el modelo es privado o si necesitas evitar límites de descarga.
-
-### 1. Obtener tu token de Hugging Face
-1. Crea una cuenta (si no tienes) en https://huggingface.co/join
-2. Ve a tu perfil y selecciona "Access Tokens" o "Tokens de acceso": https://huggingface.co/settings/tokens
-3. Haz clic en "New token" (Nuevo token), asígnale un nombre y selecciona el scope "Read" (lectura).
-4. Copia el token generado.
-
-### 2. Configurar el token en el archivo `.env`
-Agrega la siguiente línea en tu archivo `.env` (o en `.env.example` para compartir la plantilla):
-
-```env
-HF_TOKEN=tu_token_de_huggingface_aqui
-```
-
-> **Nota:** No compartas tu token real en repositorios públicos.
-
-### 3. Instalar la librería necesaria
-Asegúrate de tener instalada la librería `huggingface_hub`:
+### Frontend
 
 ```bash
-pip install huggingface_hub
+cd front
+npm install
+npm run dev
+```
+La interfaz web estará disponible en http://localhost:5173
+
+---
+
+## Ejemplo de Request/Response de la API
+
+**Request:**
+```http
+POST /skin/api/analyze
+Content-Type: multipart/form-data
+
+file: imagen.png
 ```
 
-Si usas `requirements.txt`, puedes agregarla allí:
-```
-huggingface_hub
-```
-
-### 4. ¿Cómo se usa el token en el proyecto?
-El token se carga automáticamente desde el archivo `.env` y se utiliza al descargar modelos desde Hugging Face. El archivo `app/config/model_config.py` contiene la lógica para leer la variable `HF_TOKEN` y configurar el entorno.
-
-## Gestión de Imágenes
-Las imágenes subidas se procesan y luego se eliminan para garantizar la privacidad y seguridad de los datos.
-
-## Interfaces de Usuario
-
-### Página de Carga de Imagen (`upload.html`)
-- **Descripción:** Permite a los usuarios cargar una imagen facial para su análisis.
-- **Colores:** Tonos de verde y azul para una apariencia saludable y relajante.
-- **Elementos:**
-  - Un formulario para subir la imagen.
-  - Botón para enviar la imagen.
-  - Mensajes de estado (éxito/error).
-
-### Página de Resultados (`results.html`)
-- **Descripción:** Muestra los resultados del análisis de la imagen cargada.
-- **Colores:** Tonos de verde y azul para una apariencia saludable y relajante.
-- **Elementos:**
-  - Información sobre el análisis (condiciones detectadas, severidad, etc.).
-  - Gráficos o visualizaciones relevantes.
-  - Botón para volver a cargar una nueva imagen.
-
-## Modularidad de Modelos
-Cada modelo se encapsula en su propio módulo dentro del directorio `models` para facilitar el manejo y extensión del sistema. Esto permite agregar, modificar o eliminar modelos sin afectar el resto del sistema.
-
-### Ejemplo de Estructura de Modelos
-```
-models/
-├── __init__.py
-├── base.py         # Modelo base abstracto
-├── derm_foundation/ # Módulo para el modelo Derm Foundation
-│   ├── __init__.py
-│   ├── model.py     # Implementación del modelo Derm Foundation
-│   └── config.py    # Configuración específica del modelo
-├── model1/          # Módulo para otro modelo adicional
-│   ├── __init__.py
-│   ├── model.py     # Implementación del modelo1
-│   └── config.py    # Configuración específica del modelo1
-└── model2/          # Módulo para otro modelo adicional
-    ├── __init__.py
-    ├── model.py     # Implementación del modelo2
-    └── config.py    # Configuración específica del modelo2
+**Response:**
+```json
+{
+  "embedding": [0.123, 0.456, ...],
+  "modelo": "Derm Foundation v1.0"
+}
 ```
 
-### Recomendación de Modelos Adicionales
-Se recomienda agregar 2 o 3 modelos adicionales para mejorar la funcionalidad y precisión del sistema. Algunas opciones podrían ser:
-- **Modelo para la detección de acné:** Para identificar y clasificar diferentes tipos de acné.
-- **Modelo para la detección de arrugas:** Para evaluar la edad y el estado de la piel.
-- **Modelo para la detección de manchas oscuras:** Para identificar y clasificar manchas oscuras en la piel.
+---
 
-Estos modelos adicionales pueden proporcionar una visión más completa y precisa del estado de la piel del usuario.
+## FAQ - Preguntas Frecuentes
 
-## Licencia
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+**¿Se almacenan mis imágenes?**
+No, las imágenes se procesan y eliminan tras el análisis.
 
-## Contacto
-Para cualquier consulta o colaboración, contacta a:
+**¿Puedo usar mis propios modelos?**
+Sí, el sistema es modular y permite integrar nuevos modelos fácilmente.
+
+**¿Qué limitaciones tiene el sistema?**
+Actualmente, el modelo base genera representaciones (embeddings) pero no diagnósticos automáticos. El roadmap incluye la integración de clasificadores específicos para cada condición.
+
+---
+
+## Reconocimientos y Créditos
+
+- [Modelo Derm Foundation - Google/Hugging Face](https://huggingface.co/google/derm-foundation)
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [React](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [TensorFlow](https://www.tensorflow.org/)
+- [Keras](https://keras.io/)
+
+---
+
+## Política de Privacidad
+
+Este proyecto procesa imágenes de manera temporal y no almacena datos personales. Si se despliega públicamente, se recomienda agregar una política de privacidad detallada.
+
+---
+
+## Contribución
+
+¿Te gustaría colaborar?  
+Haz un fork, crea tu rama, realiza tus cambios y abre un Pull Request. ¡Toda ayuda es bienvenida!
+
+---
+
+## Licencia y Contacto
+
+Este proyecto está bajo licencia MIT.
+Para consultas o colaboración, contacta a:
 - Nombre: [Tu Nombre]
 - Email: [tu.email@example.com]
 - GitHub: [github.com/tu_usuario]
-
-## Contribución
-Para contribuir a este proyecto, sigue estos pasos:
-1. Haz un fork del repositorio
-2. Crea tu rama (`git checkout -b feature/AmazingFeature`)
-3. Haz tus cambios (`git commit -m 'Añadir alguna característica AmazingFeature'`)
-4. Empuja a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-> **Nota sobre TensorFlow:**
-> Este proyecto está pensado para ejecutarse en CPU. Por defecto, el paquete `tensorflow` que se instala desde PyPI es compatible con CPU. No es necesario instalar versiones específicas para GPU. Si tu entorno tiene una GPU y deseas forzar el uso de CPU, el código del proyecto ya lo fuerza en la configuración (`app/config/model_config.py`).
->
-> - Para TensorFlow:
->   ```bash
->   pip install tensorflow
->   ```
->   (No instales `tensorflow-gpu`)

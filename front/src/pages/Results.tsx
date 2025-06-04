@@ -16,6 +16,7 @@ const Results: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
   const [results, setResults] = useState<AnalysisResult[]>([]);
+  const [analysis, setAnalysis] = useState<any>(null);
 
   // Mock analysis results - in real app, this would come from API
   useEffect(() => {
@@ -72,6 +73,10 @@ const Results: React.FC = () => {
           color: 'green'
         }
       ]);
+      setAnalysis({
+        embeddings: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0],
+        embedding_shape: [20]
+      });
       setLoading(false);
     }, 1000);
   }, [id]);
