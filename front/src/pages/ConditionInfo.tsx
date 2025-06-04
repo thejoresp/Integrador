@@ -252,40 +252,40 @@ const ConditionInfo: React.FC = () => {
           />
         </div>
         
-        <div className="p-6">
+        <div className="p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
           <div className="flex items-center mb-4">
             <div className="text-blue-600 mr-3">
               {conditionData.icon}
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">{conditionData.title}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{conditionData.title}</h1>
           </div>
           
-          <p className="text-lg text-gray-700 mb-8">{conditionData.description}</p>
+          <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">{conditionData.description}</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Causas</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Causas</h2>
               <ul className="space-y-2">
                 {conditionData.causes.map((cause, index) => (
                   <li key={index} className="flex items-start">
                     <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-800 text-sm font-medium mr-3 flex-shrink-0">
                       {index + 1}
                     </span>
-                    <span className="text-gray-600">{cause}</span>
+                    <span className="text-gray-600 dark:text-gray-300">{cause}</span>
                   </li>
                 ))}
               </ul>
             </div>
             
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Síntomas</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Síntomas</h2>
               <ul className="space-y-2">
                 {conditionData.symptoms.map((symptom, index) => (
                   <li key={index} className="flex items-start">
                     <svg className="h-5 w-5 text-blue-600 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-gray-600">{symptom}</span>
+                    <span className="text-gray-600 dark:text-gray-300">{symptom}</span>
                   </li>
                 ))}
               </ul>
@@ -293,43 +293,43 @@ const ConditionInfo: React.FC = () => {
           </div>
           
           <div className="mt-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Tratamiento</h2>
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Tratamiento</h2>
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-100 dark:border-blue-700 mb-6">
               <ul className="space-y-2">
                 {conditionData.treatment.map((treatment, index) => (
                   <li key={index} className="flex items-start">
-                    <svg className="h-5 w-5 text-blue-600 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-5 w-5 text-blue-600 dark:text-blue-400 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    <span className="text-gray-700">{treatment}</span>
+                    <span className="text-gray-700 dark:text-gray-200">{treatment}</span>
                   </li>
                 ))}
               </ul>
             </div>
             
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Prevención</h2>
-            <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Prevención</h2>
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-100 dark:border-green-700">
               <ul className="space-y-2">
                 {conditionData.prevention.map((prevention, index) => (
                   <li key={index} className="flex items-start">
-                    <svg className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-5 w-5 text-green-600 dark:text-green-400 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    <span className="text-gray-700">{prevention}</span>
+                    <span className="text-gray-700 dark:text-gray-200">{prevention}</span>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
           
-          <div className="mt-10 p-6 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="mt-10 p-6 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center mb-4">
               <svg className="h-6 w-6 text-yellow-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900">Importante</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Importante</h3>
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               La información proporcionada es de carácter general y educativo. Siempre consulta con un dermatólogo 
               profesional para un diagnóstico preciso y un plan de tratamiento personalizado.
             </p>

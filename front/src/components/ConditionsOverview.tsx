@@ -65,7 +65,7 @@ const ConditionsOverview: React.FC = () => {
           <Link 
             key={condition.id}
             to={`/conditions/${condition.id}`}
-            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
           >
             <div className="h-48 overflow-hidden">
               <img 
@@ -79,9 +79,9 @@ const ConditionsOverview: React.FC = () => {
                 <div className="text-blue-600 mr-2">
                   {condition.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900">{condition.title}</h3>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{condition.title}</h3>
               </div>
-              <p className="text-gray-600">{condition.description}</p>
+              <p className="text-gray-600 dark:text-gray-300">{condition.description}</p>
               <div className="mt-4 text-blue-600 font-medium flex items-center">
                 Más información
                 <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -93,14 +93,14 @@ const ConditionsOverview: React.FC = () => {
         ))}
       </div>
       
-      <div className="mt-12 bg-blue-50 rounded-xl p-6 border border-blue-100">
-        <div className="flex items-center justify-center text-blue-800 mb-4">
+      <div className="mt-12 bg-blue-50 dark:bg-gray-700 rounded-xl p-6 border border-blue-100 dark:border-gray-700">
+        <div className="flex items-center justify-center text-blue-800 dark:text-blue-200 mb-4">
           <svg className="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <h3 className="text-xl font-semibold">¿Tienes una preocupación específica?</h3>
         </div>
-        <p className="text-blue-700 text-center">
+        <p className="text-blue-700 dark:text-gray-200 text-center">
           Consulta con un dermatólogo profesional para un diagnóstico preciso.
         </p>
         <div className="mt-4 flex justify-center">
