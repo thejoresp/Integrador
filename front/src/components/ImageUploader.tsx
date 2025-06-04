@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Camera, Upload, X, Image as ImageIcon } from 'lucide-react';
 
 const ConsentModal: React.FC<{ onAccept: () => void; onClose: () => void }> = ({ onAccept, onClose }) => {
+  const [checked, setChecked] = useState(false);
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -11,55 +12,47 @@ const ConsentModal: React.FC<{ onAccept: () => void; onClose: () => void }> = ({
           <div className="prose prose-sm">
             <h3 className="text-lg font-semibold mb-2">📄 Consentimiento Informado para el Tratamiento de Datos Faciales</h3>
             <p>
-              Piel Sana IA informa que tratará datos personales sensibles a través del análisis de imágenes faciales, 
-              conforme a la Ley N.º 25.326 de Protección de Datos Personales.
+              Piel Sana IA te informa que, para poder analizar tu imagen, necesitamos tu consentimiento para el tratamiento de datos personales sensibles, conforme a la Ley N.º 25.326 de Protección de Datos Personales y normativa aplicable.
             </p>
-
-            <h4 className="font-semibold mt-4 mb-2">Finalidad:</h4>
-            <p>
-              El análisis facial se utilizará con fines orientados al bienestar, salud visual y dermatológica, 
-              y autoconocimiento emocional. Las funciones incluyen, entre otras:
-            </p>
+            <h4 className="font-semibold mt-4 mb-2">¿Para qué se usan tus datos?</h4>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Evaluación del estado de la piel, hidratación, lesiones o lunares</li>
-              <li>Estimación de edad, género, emociones, fatiga, estrés</li>
-              <li>Análisis de microexpresiones, postura, simetría y señales de insomnio</li>
-              <li>Estimación de consumo de sustancias visibles, dolor facial, desequilibrios hormonales y nutricionales</li>
+              <li>Promover el bienestar, autocuidado y prevención de problemas dermatológicos.</li>
+              <li>Brindar información orientativa sobre el estado de tu piel y posibles condiciones frecuentes.</li>
+              <li>Facilitar el acceso a herramientas de salud para todas las personas, sin distinción.</li>
             </ul>
-
-            <h4 className="font-semibold mt-4 mb-2">Tratamiento de datos:</h4>
-            <p>Se capturarán y procesarán los siguientes tipos de datos:</p>
+            <h4 className="font-semibold mt-4 mb-2">¿Qué datos se procesan?</h4>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Imagen facial y datos biométricos derivados</li>
-              <li>Datos ingresados manualmente (peso, altura, edad)</li>
-              <li>Resultados automáticos generados por modelos de IA</li>
+              <li>Imágenes faciales que subas para el análisis.</li>
+              <li>Datos derivados de la imagen (resultados automáticos del análisis).</li>
             </ul>
-
-            <h4 className="font-semibold mt-4 mb-2">Tecnología empleada:</h4>
-            <p>
-              Los datos serán procesados mediante redes neuronales y modelos preentrenados como <strong>CNN, MobileNet, 
-              U-Net, DeepFace, InsightFace, OpenCV, MediaPipe, Dlib, AffectNet, FER</strong>, entre otros.
-            </p>
-
-            <h4 className="font-semibold mt-4 mb-2">Derechos del usuario:</h4>
-            <p>
-              Podrá ejercer sus derechos de acceso, rectificación, actualización, cancelación y oposición, 
-              enviando un correo a: contacto@pielsanaia.com.
-            </p>
-
-            <h4 className="font-semibold mt-4 mb-2">Seguridad:</h4>
-            <p>
-              Implementamos medidas de seguridad técnicas y organizativas para evitar accesos no autorizados o usos indebidos.
-            </p>
-
+            <h4 className="font-semibold mt-4 mb-2">Privacidad y Seguridad</h4>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Tus imágenes se procesan solo para el análisis y se eliminan inmediatamente después.</li>
+              <li>No se almacenan datos personales ni se comparten con terceros.</li>
+              <li>Se aplican medidas de seguridad para proteger tu información.</li>
+            </ul>
+            <h4 className="font-semibold mt-4 mb-2">Tus derechos</h4>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Puedes solicitar acceso, rectificación, actualización, cancelación u oposición al tratamiento de tus datos escribiendo a <a href="mailto:contacto@pielsanaia.com">contacto@pielsanaia.com</a>.</li>
+            </ul>
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
               <p className="font-medium">
-                ☑️ Al aceptar, usted presta su consentimiento libre, expreso e informado para el tratamiento de sus datos 
-                sensibles en los términos expuestos.
+                Al aceptar, confirmas que has leído y comprendido la información anterior, y prestas tu consentimiento libre, expreso e informado para el tratamiento temporal de tus datos sensibles en los términos expuestos.
               </p>
             </div>
           </div>
-
+          <div className="mt-6 flex items-center">
+            <input
+              id="consent-check"
+              type="checkbox"
+              checked={checked}
+              onChange={e => setChecked(e.target.checked)}
+              className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <label htmlFor="consent-check" className="text-gray-700 text-sm select-none">
+              He leído y acepto el consentimiento informado para el tratamiento de mis datos sensibles.
+            </label>
+          </div>
           <div className="mt-6 flex justify-end space-x-4">
             <button
               onClick={onClose}
@@ -69,7 +62,8 @@ const ConsentModal: React.FC<{ onAccept: () => void; onClose: () => void }> = ({
             </button>
             <button
               onClick={onAccept}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className={`px-4 py-2 rounded-md text-white ${checked ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'}`}
+              disabled={!checked}
             >
               Aceptar
             </button>
@@ -159,7 +153,7 @@ const ImageUploader: React.FC = () => {
       if (!response.ok) throw new Error('Error en el análisis');
       const data = await response.json();
       navigate(`/results/${data.id}`);
-    } catch (error) {
+    } catch {
       alert('Error al analizar la imagen');
     } finally {
       setIsAnalyzing(false);
