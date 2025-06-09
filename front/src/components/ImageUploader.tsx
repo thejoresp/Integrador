@@ -98,19 +98,7 @@ const analysisTypes = [
     label: 'Lunares',
     image: 'https://images.pexels.com/photos/1115128/pexels-photo-1115128.jpeg?auto=compress&w=400',
     description: 'Análisis de lunares y lesiones atípicas.',
-  },
-  {
-    key: 'urticaria',
-    label: 'Urticaria',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/EMminor2010.JPG/400px-EMminor2010.JPG',
-    description: 'Reconocimiento de habones y patrones de inflamación.',
-  },
-  {
-    key: 'burns',
-    label: 'Quemaduras',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg',
-    description: 'Clasificación de quemaduras superficiales y profundas.',
-  },
+  }
 ];
 
 const ImageUploader: React.FC = () => {
@@ -180,13 +168,17 @@ const ImageUploader: React.FC = () => {
     formData.append('file', selectedFile);
   
     try {
-      const response = await fetch('http://localhost:8080/skin/api/analyze', {
+      let endpoint = 'http://localhost:8080/skin/api/analyze';
+      if (analysisType === 'moles') {
+        endpoint = 'http://localhost:8080/skin/api/analyze-lunares';
+      }
+      const response = await fetch(endpoint, {
         method: 'POST',
         body: formData,
       });
       if (!response.ok) throw new Error('Error en el análisis');
       const data = await response.json();
-      navigate(`/results/${data.id}`);
+      navigate(`/results/${data.id || data.filename}`);
     } catch {
       alert('Error al analizar la imagen');
     } finally {
@@ -214,7 +206,7 @@ const ImageUploader: React.FC = () => {
       {!image && (
         <div className="mb-6">
           <h3 className="text-lg font-medium mb-3 text-gray-800 text-center">Selecciona el tipo de análisis que deseas realizar</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
             {analysisTypes.map((type) => (
               <button
                 key={type.key}

@@ -77,3 +77,6 @@ frontend/dist/
 front/node_modules/
 front/dist/
 front/.vercel/
+
+modeloPreEntrenados/
+pipelineModelos/

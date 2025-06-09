@@ -69,6 +69,9 @@ Nuestra plataforma ayuda a detectar y monitorear condiciones cutáneas frecuente
   - [Política de Privacidad](#política-de-privacidad)
   - [Contribución](#contribución)
   - [Licencia y Contacto](#licencia-y-contacto)
+  - [Modelos Integrados](#modelos-integrados)
+    - [Derm Foundation (Hugging Face)](#derm-foundation-hugging-face)
+    - [lunares.keras (HAM10000)](#lunareskeras-ham10000)
 
 ---
 
@@ -88,7 +91,7 @@ PielSana IA combina lo último en inteligencia artificial y desarrollo web para 
 |--------------|--------------------------------------------|
 | Frontend     | React, Vite, TypeScript, TailwindCSS       |
 | Backend      | FastAPI, Python, TensorFlow, Keras         |
-| Modelos      | Derm Foundation (Hugging Face), futuros modelos |
+| Modelos      | Derm Foundation (Hugging Face), lunares.keras (HAM10000), futuros modelos |
 | Infraestructura | Docker, GitHub Actions, .env            |
 
 ## Diagrama de Arquitectura
@@ -210,3 +213,23 @@ Para consultas o colaboración, contacta a:
 - Nombre: [Tu Nombre]
 - Email: [tu.email@example.com]
 - GitHub: [github.com/tu_usuario]
+
+---
+
+## Modelos Integrados
+
+### Derm Foundation (Hugging Face)
+- Genera embeddings avanzados para imágenes de piel.
+- Ideal para tareas de transferencia y análisis general.
+
+### lunares.keras (HAM10000)
+- Modelo entrenado sobre el dataset HAM10000 para clasificación de lesiones pigmentadas.
+- **Etiquetas:**
+  - akiec: Queratosis Actínica
+  - bcc: Carcinoma Basocelular
+  - bkl: Queratosis Benigna
+  - df: Dermatofibroma
+  - mel: Melanoma
+  - nv: Lúnar Común (Nevus)
+  - vasc: Lesión Vascular
+- Permite identificar y diferenciar entre lesiones benignas y malignas de la piel.

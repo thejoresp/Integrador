@@ -6,7 +6,7 @@ from pathlib import Path
 import asyncio
 
 # Importar el servicio de análisis de piel
-from app.services.skin_analysis_service import get_image_embeddings, load_skin_model
+from app.services.skin_analysis_service import get_image_embeddings, load_skin_model, predict_lunares_class
 
 # Configurar el router
 router = APIRouter()
@@ -122,4 +122,25 @@ async def api_analyze_skin(file: UploadFile = File(...)):
             raise HTTPException(status_code=500, detail="No se pudieron generar embeddings para la imagen.")
     except Exception as e:
         print(f"Error en API /api/analyze: {e}")
+        raise HTTPException(status_code=500, detail=f"Error interno del servidor al analizar la imagen: {str(e)}")
+
+@router.post("/api/analyze-lunares", tags=["Skin Analysis API"])
+async def api_analyze_lunares(file: UploadFile = File(...)):
+    """Endpoint API para analizar una imagen solo con el modelo lunares.keras."""
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="El archivo debe ser una imagen.")
+    try:
+        image_bytes = await file.read()
+        pred_label, probabilities = predict_lunares_class(image_bytes)
+        if pred_label is not None:
+            return {
+                "filename": file.filename,
+                "content_type": file.content_type,
+                "prediccion": pred_label,
+                "probabilidades": probabilities
+            }
+        else:
+            raise HTTPException(status_code=500, detail="No se pudo predecir la clase para la imagen.")
+    except Exception as e:
+        print(f"Error en API /api/analyze-lunares: {e}")
         raise HTTPException(status_code=500, detail=f"Error interno del servidor al analizar la imagen: {str(e)}") 

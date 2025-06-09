@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AlertCircle, Thermometer, Sun, Crosshair, Droplets, Flame } from 'lucide-react';
+import { AlertCircle, Thermometer, Sun, Crosshair } from 'lucide-react';
 
 interface SkinCondition {
   id: string;
@@ -38,21 +38,7 @@ const skinConditions: SkinCondition[] = [
     title: 'Lunares',
     description: 'Los lunares son áreas pequeñas de pigmentación en la piel. La mayoría son inofensivos, pero es importante monitorearlos.',
     image: 'https://images.pexels.com/photos/8058606/pexels-photo-8058606.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  },
-  {
-    id: 'urticaria',
-    icon: <Droplets className= "h-6 w-6" />,
-    title: 'Urticaria',
-    description: 'La urticaria causa ronchas elevadas, rojas o de color piel, que aparecen repentinamente y causan picazón intensa.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/EMminor2010.JPG/1200px-EMminor2010.JPG',
-  },
-  {
-    id: 'quemaduras',
-    icon: <Flame className= "h-6 w-6" />,
-    title: 'Quemaduras',
-    description: 'Las quemaduras son lesiones en la piel causadas por calor, electricidad, productos químicos, fricción o radiación.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg',
-  },
+  }
 ];
 
 const ConditionsOverview: React.FC = () => {
@@ -60,7 +46,7 @@ const ConditionsOverview: React.FC = () => {
     <div className="py-10">
       <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Condiciones Comunes de la Piel</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         {skinConditions.map((condition) => (
           <Link 
             key={condition.id}
