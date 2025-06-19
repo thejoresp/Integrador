@@ -225,7 +225,7 @@ Este proyecto procesa imágenes de manera temporal y no almacena datos personale
 
 ## Contribución
 
-¿Te gustaría colaborar?  
+¿Te gustaría colaborar?
 Haz un fork, crea tu rama, realiza tus cambios y abre un Pull Request. ¡Toda ayuda es bienvenida!
 
 ---
