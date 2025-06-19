@@ -245,3 +245,12 @@ Para consultas o colaboración, contacta a:
 ### Modelos locales
 - Puedes integrar cualquier modelo local de análisis dermatológico (por ejemplo, lunares.keras entrenado sobre HAM10000, u otros modelos propios o de terceros).
 - El sistema es modular y permite agregar nuevos modelos fácilmente.
+- **Próximamente:** Se sumarán modelos específicos para la detección de rosácea y acné, ampliando el alcance de la plataforma.
+- **Ejemplo de predicciones del modelo lunares.keras:**
+  - Queratosis Actínica
+  - Carcinoma Basocelular
+  - Queratosis Benigna
+  - Dermatofibroma
+  - Melanoma
+  - Lúnar Común (Nevus)
+  - Lesión Vascular
