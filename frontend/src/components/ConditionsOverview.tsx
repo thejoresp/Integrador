@@ -26,14 +26,14 @@ const skinConditions: SkinCondition[] = [
     image: 'https://images.pexels.com/photos/1138531/pexels-photo-1138531.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
   },
   {
-    id: 'sunspots',
+    id: 'manchas',
     icon: <Sun className="h-6 w-6" />,
     title: 'Manchas Solares',
     description: 'Las manchas solares son áreas de la piel que se oscurecen debido a la exposición al sol.',
     image: 'https://images.pexels.com/photos/7479603/pexels-photo-7479603.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
   },
   {
-    id: 'moles',
+    id: 'lunares',
     icon: <Crosshair className="h-6 w-6" />,
     title: 'Lunares',
     description: 'Los lunares son áreas pequeñas de pigmentación en la piel. La mayoría son inofensivos, pero es importante monitorearlos.',

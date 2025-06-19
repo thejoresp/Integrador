@@ -132,18 +132,18 @@ const ImageUploader: React.FC = () => {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (!file.type.match('image.*')) {
-        alert('Por favor sube una imagen válida');
-        return;
-      }
-      setSelectedFile(file);
-      const reader = new FileReader();
+    if (!file.type.match('image.*')) {
+      alert('Por favor sube una imagen válida');
+      return;
+    }
+    setSelectedFile(file);
+    const reader = new FileReader();
       reader.onload = (ev) => {
         if (ev.target && typeof ev.target.result === 'string') {
           setImage(ev.target.result);
-        }
-      };
-      reader.readAsDataURL(file);
+      }
+    };
+    reader.readAsDataURL(file);
     }
   };
 

@@ -14,10 +14,36 @@ Nuestra plataforma ayuda a detectar y monitorear condiciones cutáneas frecuente
 ## ¿Cómo funciona PielSana IA?
 
 1. **Sube una foto de tu rostro o zona de interés** a través de una interfaz web simple y segura.
-2. **La imagen es analizada por un sistema de inteligencia artificial** que extrae información relevante sobre tu piel.
+2. **La imagen es analizada por un sistema de inteligencia artificial** que extrae información relevante sobre tu piel usando modelos locales.
 3. **Recibes un informe inmediato** sobre posibles condiciones cutáneas detectadas, que puedes usar como referencia para tu autocuidado o para consultar con un especialista.
 
 > **Privacidad:** Tus imágenes se procesan de forma temporal y se eliminan tras el análisis. No almacenamos datos personales.
+
+---
+
+## Estructura del Monorepo
+
+```
+Integrador/
+├── frontend/               ← React + Vite
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   ├── vite.config.js
+│   └── ...
+├── backend/                ← FastAPI y modelos locales
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── config/
+│   ├── controllers/
+│   ├── models/
+│   ├── services/
+│   ├── templates/
+│   ├── routes.py
+│   └── modelos/           ← Aquí van los modelos preentrenados locales
+├── README.md
+└── .gitignore
+```
 
 ---
 
@@ -51,6 +77,7 @@ Nuestra plataforma ayuda a detectar y monitorear condiciones cutáneas frecuente
 - [PielSana IA](#pielsana-ia)
   - [Cuidando tu piel con inteligencia artificial](#cuidando-tu-piel-con-inteligencia-artificial)
   - [¿Cómo funciona PielSana IA?](#cómo-funciona-pielsana-ia)
+  - [Estructura del Monorepo](#estructura-del-monorepo)
   - [Casos de Uso](#casos-de-uso)
     - [Principales Condiciones Cutáneas Analizadas](#principales-condiciones-cutáneas-analizadas)
   - [¿Quién puede usarlo?](#quién-puede-usarlo)
@@ -91,7 +118,7 @@ PielSana IA combina lo último en inteligencia artificial y desarrollo web para 
 |--------------|--------------------------------------------|
 | Frontend     | React, Vite, TypeScript, TailwindCSS       |
 | Backend      | FastAPI, Python, TensorFlow, Keras         |
-| Modelos      | Derm Foundation (Hugging Face), lunares.keras (HAM10000), futuros modelos |
+| Modelos      | lunares.keras (HAM10000), futuros modelos  |
 | Infraestructura | Docker, GitHub Actions, .env            |
 
 ## Diagrama de Arquitectura
@@ -124,23 +151,19 @@ flowchart TD
 ### Backend
 
 ```bash
-# Crear entorno virtual
+cd backend
 python3.10 -m venv venv
 source venv/bin/activate
-
-# Instalar dependencias
 pip install --upgrade pip
 pip install -r requirements.txt
-
-# Iniciar el servidor
-python run.py
+python main.py
 ```
 La API estará disponible en http://localhost:8080
 
 ### Frontend
 
 ```bash
-cd front
+cd frontend
 npm install
 npm run dev
 ```
@@ -177,13 +200,12 @@ No, las imágenes se procesan y eliminan tras el análisis.
 Sí, el sistema es modular y permite integrar nuevos modelos fácilmente.
 
 **¿Qué limitaciones tiene el sistema?**
-Actualmente, el modelo base genera representaciones (embeddings) pero no diagnósticos automáticos. El roadmap incluye la integración de clasificadores específicos para cada condición.
+Actualmente, el modelo base solo clasifica imágenes según las condiciones soportadas. El roadmap incluye la integración de más clasificadores específicos.
 
 ---
 
 ## Reconocimientos y Créditos
 
-- [Modelo Derm Foundation - Google/Hugging Face](https://huggingface.co/google/derm-foundation)
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [React](https://react.dev/)
 - [Vite](https://vitejs.dev/)

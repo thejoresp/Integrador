@@ -8,9 +8,9 @@ import { BrowserRouter } from 'react-router-dom';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <div className="min-h-screen">
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
     </div>
   </StrictMode>
 );

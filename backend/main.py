@@ -4,6 +4,7 @@ from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
+from backend.controllers import skin
 
 # Cargar variables de entorno del archivo .env
 # Es bueno hacerlo lo antes posible
@@ -35,7 +36,6 @@ async def read_root():
     return RedirectResponse(url="/skin/")
 
 # Registrar routers de los controladores
-from app.controllers import skin
 app.include_router(skin.router, prefix="/skin", tags=["Skin Analysis Frontend"])
 
 if __name__ == "__main__":
