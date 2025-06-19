@@ -56,11 +56,10 @@ Integrador/
 
 ### Principales Condiciones Cutáneas Analizadas
 
+- **Lunares:** Identificación y clasificación de diferentes tipos de lesiones pigmentadas.
 - **Acné:** Identificación y clasificación de diferentes tipos de lesiones acneicas.
 - **Rosácea:** Detección de enrojecimiento, pápulas y telangiectasias.
 - **Manchas solares y lesiones atípicas:** Evaluación de hiperpigmentaciones y lesiones sospechosas.
-- **Urticaria:** Reconocimiento de habones y patrones de inflamación aguda.
-- **Quemaduras:** Clasificación de quemaduras superficiales y profundas.
 
 ---
 
@@ -97,8 +96,7 @@ Integrador/
   - [Contribución](#contribución)
   - [Licencia y Contacto](#licencia-y-contacto)
   - [Modelos Integrados](#modelos-integrados)
-    - [Derm Foundation (Hugging Face)](#derm-foundation-hugging-face)
-    - [lunares.keras (HAM10000)](#lunareskeras-ham10000)
+    - [Modelos locales](#modelos-locales)
 
 ---
 
@@ -108,7 +106,7 @@ PielSana IA combina lo último en inteligencia artificial y desarrollo web para 
 
 - **Frontend:** Interfaz web desarrollada en React/Vite, fácil de usar y accesible desde cualquier dispositivo.
 - **Backend:** API en FastAPI que gestiona la recepción y análisis de imágenes.
-- **Modelos de IA:** Utiliza el modelo Derm Foundation de Google (Hugging Face) como base para el análisis, generando representaciones avanzadas (embeddings) de las imágenes. El sistema está preparado para integrar modelos adicionales en el futuro.
+- **Modelos de IA:** Utiliza un modelo local de análisis dermatológico (por ejemplo, entrenado sobre el dataset HAM10000). El sistema está preparado para integrar modelos adicionales en el futuro.
 - **Privacidad:** Procesamiento temporal de imágenes, sin almacenamiento de datos personales.
 - **Extensibilidad:** Arquitectura modular que permite agregar nuevos modelos y funcionalidades fácilmente.
 
@@ -118,18 +116,17 @@ PielSana IA combina lo último en inteligencia artificial y desarrollo web para 
 |--------------|--------------------------------------------|
 | Frontend     | React, Vite, TypeScript, TailwindCSS       |
 | Backend      | FastAPI, Python, TensorFlow, Keras         |
-| Modelos      | lunares.keras (HAM10000), futuros modelos  |
+| Modelos      | Modelos locales (ej: lunares.keras, otros) |
 | Infraestructura | Docker, GitHub Actions, .env            |
 
 ## Diagrama de Arquitectura
 
-<!-- Puedes reemplazar este bloque por un diagrama real (Mermaid o imagen) -->
 ```mermaid
 flowchart TD
     Usuario -->|Carga imagen| Frontend
     Frontend -->|Envía imagen| Backend
-    Backend -->|Procesa| ModeloDermFoundation
-    ModeloDermFoundation -->|Embedding| Backend
+    Backend -->|Procesa| ModeloLocal
+    ModeloLocal -->|Resultado| Backend
     Backend -->|Resultados| Frontend
 ```
 
@@ -184,8 +181,13 @@ file: imagen.png
 **Response:**
 ```json
 {
-  "embedding": [0.123, 0.456, ...],
-  "modelo": "Derm Foundation v1.0"
+  "prediccion": "Lúnar Común (Nevus)",
+  "probabilidades": {
+    "Lúnar Común (Nevus)": 0.85,
+    "Melanoma": 0.10,
+    "Queratosis Benigna": 0.05
+  },
+  "modelo": "modelo local"
 }
 ```
 
@@ -240,18 +242,6 @@ Para consultas o colaboración, contacta a:
 
 ## Modelos Integrados
 
-### Derm Foundation (Hugging Face)
-- Genera embeddings avanzados para imágenes de piel.
-- Ideal para tareas de transferencia y análisis general.
-
-### lunares.keras (HAM10000)
-- Modelo entrenado sobre el dataset HAM10000 para clasificación de lesiones pigmentadas.
-- **Etiquetas:**
-  - akiec: Queratosis Actínica
-  - bcc: Carcinoma Basocelular
-  - bkl: Queratosis Benigna
-  - df: Dermatofibroma
-  - mel: Melanoma
-  - nv: Lúnar Común (Nevus)
-  - vasc: Lesión Vascular
-- Permite identificar y diferenciar entre lesiones benignas y malignas de la piel.
+### Modelos locales
+- Puedes integrar cualquier modelo local de análisis dermatológico (por ejemplo, lunares.keras entrenado sobre HAM10000, u otros modelos propios o de terceros).
+- El sistema es modular y permite agregar nuevos modelos fácilmente.
