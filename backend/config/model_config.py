@@ -8,7 +8,10 @@ load_dotenv()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Configuración de modelos locales (puedes agregar más rutas aquí si tienes más modelos)
-LUNARES_MODEL_PATH = os.path.join(BASE_DIR, "backend", "modelos", "cancerham10000", "lunares.keras")
+LUNARES_MODEL_PATH = os.getenv(
+    "LUNARES_MODEL_PATH",
+    os.path.join(BASE_DIR, "backend", "modelos", "ham10000", "lunares.keras")
+)
 
 # Configuración de TensorFlow
 import tensorflow as tf
