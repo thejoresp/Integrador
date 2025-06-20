@@ -16,9 +16,6 @@ router = APIRouter()
 # Plantillas
 templates = Jinja2Templates(directory="backend/templates")
 
-UPLOAD_DIR = Path("temp_uploads")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-
 # Diccionario de condiciones (temporal, normalmente iría en un archivo aparte)
 conditions_data = {
     "rosacea": ConditionInfo(

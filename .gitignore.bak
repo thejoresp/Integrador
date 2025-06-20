@@ -1,33 +1,13 @@
 # Entornos virtuales
 venv/
-env/
-.env/
-.venv/
 
 # Archivos de Python
 __pycache__/
 *.py[cod]
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
-eggs/
-parts/
-bin/
-var/
-sdist/
-develop-eggs/
-installs/
-lib/
-lib64/
-wheels/
-*.egg-info/
 
 # Archivos de configuración local
 .env
-config.yaml
-config.local.yaml
+.env/
 
 # IDEs y editores
 .idea/
@@ -38,7 +18,6 @@ config.local.yaml
 
 # Logs
 *.log
-logs/
 
 # Caché
 .pytest_cache/
@@ -49,25 +28,17 @@ htmlcov/
 tmp/
 temp/
 
-# Bases de datos
-*.db
-*.sqlite3
+# Frontend (React/Vite)
+# --- Exclusiones específicas del frontend (React/Vite) ---
+# Dependencias de Node.js
+frontend/node_modules/
+# Archivos de build de Vite
+frontend/dist/
+# Caché de Vite
+frontend/.vite/
 
-# Imágenes subidas por usuarios (mantener estructura de carpetas)
-uploads/**/*.jpg
-uploads/**/*.png
-uploads/**/*.jpeg
+# Modelos y datos grandes
+backend/modelos/*
 
-# Certificados y claves
-*.pem
-*.key
-*.crt
-
-# Archivos específicos del proyecto
-# Mantener la estructura de carpetas pero ignorar su contenido
-models/**/*
-!models/.gitkeep
-!models/pretrained/.gitkeep
-
-app/uploads/**/*
-!app/uploads/.gitkeep
+# Otros
+pipelineModelos/

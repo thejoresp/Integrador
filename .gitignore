@@ -42,3 +42,9 @@ backend/modelos/*
 
 # Otros
 pipelineModelos/
+
+# Ignorar archivos de entorno locales y de cloud
+backend/.env.local
+backend/.env.cloud
+frontend/.env.local
+frontend/.env.cloud
