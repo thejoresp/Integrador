@@ -4,6 +4,10 @@
 
 ## Cuidando tu piel con inteligencia artificial
 
+<div align="center">
+  <img src="frontend/public/logo.png" alt="Logo PielSana IA" width="220"/>
+</div>
+
 La piel es el órgano más grande de nuestro cuerpo y su salud es fundamental para nuestro bienestar físico y emocional. Sin embargo, muchas personas no tienen acceso fácil a un dermatólogo o a herramientas confiables para evaluar el estado de su piel.
 **PielSana IA** nace con la misión de acercar la tecnología de inteligencia artificial a la vida cotidiana, permitiendo que cualquier persona pueda analizar el estado de su piel de manera rápida, privada y sencilla, desde cualquier lugar.
 
