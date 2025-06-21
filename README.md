@@ -1,9 +1,11 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
+<div align="center">
+
 # PielSana IA
 
-<div align="center">
-  <img src="frontend/public/logo.png" alt="Logo PielSana IA" width="440"/>
+<img src="frontend/public/logo.png" alt="Logo PielSana IA" width="440"/>
+
 </div>
 
 ## Cuidando tu piel con inteligencia artificial
