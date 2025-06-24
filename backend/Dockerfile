@@ -5,19 +5,19 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copia los archivos de dependencias primero para aprovechar el cache de Docker
-COPY requirements.txt ./
+COPY backend/requirements.txt ./requirements.txt
 
-# Instala las dependencias del sistema necesarias para Pillow y TensorFlow
+# Instala las dependencias del sistema necesarias 
 RUN apt-get update && \
     apt-get install -y build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copia el resto del código de la aplicación
-COPY . .
+# Copia la carpeta backend al contenedor
+COPY backend ./backend
 
 # Expone el puerto que usará Uvicorn
 EXPOSE 8080
 
 # Comando para ejecutar la aplicación
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"] 
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080"] 

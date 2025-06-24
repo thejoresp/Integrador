@@ -20,10 +20,14 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# Habilitar CORS para el frontend en desarrollo
+# Habilitar CORS para el frontend en desarrollo y producción
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Cambia esto según el origen de tu frontend
+    allow_origins=[
+        "http://localhost:5173",            # Para desarrollo local
+        "http://127.0.0.1:5173",
+        "https://pielsana-ia.vercel.app"      # Dominio real en Vercel
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -174,6 +174,29 @@ La interfaz web estará disponible en http://localhost:5173
 
 ---
 
+## Despliegue del Backend con Docker
+
+Puedes correr el backend de FastAPI fácilmente usando Docker. Esto te permite desplegar la API en cualquier entorno compatible con Docker (local, nube, EC2, etc.).
+
+### Construir la imagen Docker
+
+Desde la raíz del proyecto (donde está la carpeta backend/), ejecuta:
+
+```bash
+docker build -t pielsana-backend -f backend/Dockerfile .
+```
+
+### Ejecutar el contenedor
+
+```bash
+docker run -p 8080:8080 pielsana-backend
+```
+
+- El backend estará disponible en http://localhost:8080
+- Si necesitas montar modelos grandes, asegúrate de que estén presentes en la carpeta backend/modelos/ antes de construir la imagen.
+
+---
+
 ## Ejemplo de Request/Response de la API
 
 **Request:**

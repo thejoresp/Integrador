@@ -37,8 +37,6 @@ frontend/dist/
 # Caché de Vite
 frontend/.vite/
 
-# Modelos y datos grandes
-backend/modelos/*
 
 # Otros
 pipelineModelos/
@@ -51,3 +49,6 @@ frontend/.env.cloud
 
 # key ssh aws ec2
 piel-sana-backend.pem
+
+# Ignorar todos los archivos de modelo Keras
+*.keras
