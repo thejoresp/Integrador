@@ -111,6 +111,7 @@ const ImageUploader: React.FC = () => {
   const [analysisType, setAnalysisType] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -168,9 +169,9 @@ const ImageUploader: React.FC = () => {
     formData.append('file', selectedFile);
   
     try {
-      let endpoint = 'http://localhost:8080/skin/api/analyze';
+      let endpoint = `${API_URL}/skin/api/analyze`;
       if (analysisType === 'moles') {
-        endpoint = 'http://localhost:8080/skin/api/analyze-lunares';
+        endpoint = `${API_URL}/skin/api/analyze-lunares`;
       }
       const response = await fetch(endpoint, {
         method: 'POST',

@@ -19,11 +19,13 @@ const ConditionInfo: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     if (!condition) return;
     setLoading(true);
     setError(null);
-    fetch(`http://localhost:8080/skin/api/condition/${condition}`)
+    fetch(`${API_URL}/skin/api/condition/${condition}`)
       .then(res => {
         if (!res.ok) throw new Error('No encontrada');
         return res.json();
@@ -31,7 +33,7 @@ const ConditionInfo: React.FC = () => {
       .then(setData)
       .catch(() => setError('No se encontró información para esta condición.'))
       .finally(() => setLoading(false));
-  }, [condition]);
+  }, [condition, API_URL]);
   
   if (loading) return <div className="text-center py-12">Cargando información...</div>;
   if (error || !data) return (

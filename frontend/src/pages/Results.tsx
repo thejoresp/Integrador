@@ -7,10 +7,12 @@ const Results: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [analysis, setAnalysis] = useState<any | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    fetch(`http://localhost:8080/skin/api/analyze-lunares/${id}`)
+    fetch(`${API_URL}/skin/api/analyze-lunares/${id}`)
       .then(res => res.json())
       .then(setAnalysis)
       .catch(() => setAnalysis({ error: 'No se pudo obtener el resultado.' }))
