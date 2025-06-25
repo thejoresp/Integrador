@@ -47,8 +47,8 @@ backend/.env.cloud
 frontend/.env.local
 frontend/.env.cloud
 
-# key ssh aws ec2
-piel-sana-backend.pem
+# key ssh
+*.pem
 
 # Ignorar todos los archivos de modelo Keras
 *.keras
