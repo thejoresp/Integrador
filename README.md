@@ -183,17 +183,35 @@ Puedes correr el backend de FastAPI fácilmente usando Docker. Esto te permite d
 Desde la raíz del proyecto (donde está la carpeta backend/), ejecuta:
 
 ```bash
-docker build -t pielsana-backend -f backend/Dockerfile .
+sudo docker build -t pielsana-backend -f backend/Dockerfile .
 ```
 
 ### Ejecutar el contenedor
 
 ```bash
-docker run -p 8080:8080 pielsana-backend
+sudo docker run -p 8080:8080 pielsana-backend
 ```
 
 - El backend estará disponible en http://localhost:8080
 - Si necesitas montar modelos grandes, asegúrate de que estén presentes en la carpeta backend/modelos/ antes de construir la imagen.
+
+---
+
+## Nota sobre permisos de Docker en Linux/EC2
+
+En algunas distribuciones de Linux (como Ubuntu en EC2), puede que necesites usar `sudo` para ejecutar comandos de Docker si tu usuario no tiene permisos suficientes. Ejemplo:
+
+```bash
+sudo docker build -t pielsana-backend -f backend/Dockerfile .
+sudo docker run -p 8080:8080 pielsana-backend
+```
+
+Si prefieres evitar usar `sudo` cada vez, puedes agregar tu usuario al grupo `docker`:
+
+```bash
+sudo usermod -aG docker $USER
+```
+Luego cierra y vuelve a abrir la sesión para que los cambios tengan efecto.
 
 ---
 
