@@ -175,7 +175,7 @@ AWS_AMI_Ubuntu_ID=ami-04b70fa74e45c3917
 AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
   --image-id $AWS_AMI_Ubuntu_ID \
   --instance-type t3.large \
-  --key-name vockey \
+  --key-name pielsana-key
   --monitoring "Enabled=false" \
   --security-group-ids $AWS_ID_GrupoSeguridad_Ubuntu \
   --subnet-id $AWS_ID_SubredPublica \
