@@ -17,7 +17,7 @@ RUN apt-get update && \
 COPY backend ./backend
 
 # Expone el puerto que usará Uvicorn
-EXPOSE 80
+EXPOSE 8080
 
 # Comando para ejecutar la aplicación
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "80"] 
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080"] 

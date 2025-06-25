@@ -44,4 +44,4 @@ app.include_router(skin.router, prefix="/skin", tags=["Skin Analysis Frontend"])
 
 if __name__ == "__main__":
     # Esta sección es útil para desarrollo, pero para producción usarás 'run.py'
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    uvicorn.run(app, host="0.0.0.0", port=8080) 

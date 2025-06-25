@@ -1,32 +1,17 @@
+
 ######################## LABORATORIO IFTS 11 ##################################
 #
 ###############################################################################
 ## Tratamiento de variables de entrada
-
-# Error si el número de parámetros menor o igual que 0
-if [ $# -le 0 ]; then
-    echo "Hay que introducir el número de alumno NN. (Entre 01 y 99)."
-    exit 1
-fi
-# Error si el parámetro no está entre 01 y 99
-if  [ "$1" -gt 0 ] && [ "$1" -le 99 ]; then
-    echo "Correcto. Es un número"
-else
-    echo "Hay que introducir el número de alumno NN. (Entre 01 y 99)." 
-    exit 1
-fi
-#echo "Hola $@!"
-NN=$1
-echo "Alumno: " $NN;
 ###############################################################################
 AWS_VPC_CIDR_BLOCK=10.22.0.0/16
-AWS_Subred_CIDR_BLOCK=10.22.1$NN.0/24
-AWS_IP_UbuntuServer=10.22.1$NN.100
-AWS_Proyecto=SRI$NN
+AWS_Subred_CIDR_BLOCK=10.22.115.0/24
+AWS_IP_UbuntuServer=10.22.115.100
+AWS_Proyecto=SRI15
 
 echo "######################################################################"
 echo "Creación de una VPC, subredes, internet gateway y tabla de rutas."
-echo "Además creará una instancia EC2 Ubuntu Server 22.04 con IP elástica en AWS con AWS CLI"
+echo "Además creará una instancia EC2 Ubuntu Server 22.04 con IPs elásticas en AWS con AWS CLI"
 echo "Se van a crear con los siguientes valores:"
 echo "Alumno:                " $NN
 echo "AWS_VPC_CIDR_BLOCK:    " $AWS_VPC_CIDR_BLOCK
@@ -140,26 +125,14 @@ AWS_ID_GrupoSeguridad_Ubuntu=$(aws ec2 create-security-group \
 echo "ID Grupo de seguridad de ubuntu: " $AWS_ID_GrupoSeguridad_Ubuntu
 
 echo "Añadiendo reglas de seguridad al grupo de seguridad Ubuntu Server..."
-## Abrir los puertos de acceso a la instancia
+# Permitir tráfico HTTP en el puerto 8080 (TCP)
 aws ec2 authorize-security-group-ingress \
   --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
-  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow SSH"}]}]'
+  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 8080, "ToPort": 8080, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow 8080 TCP (HTTP)"}]}]'
 
 aws ec2 authorize-security-group-ingress \
   --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
-  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow HTTP"}]}]'
-
-aws ec2 authorize-security-group-ingress \
-  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
-  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 53, "ToPort": 53, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow DNS(TCP)"}]}]'
-
-aws ec2 authorize-security-group-ingress \
-  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
-  --ip-permissions '[{"IpProtocol": "UDP", "FromPort": 53, "ToPort": 53, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow DNS(UDP)"}]}]'
-
-aws ec2 authorize-security-group-ingress \
-  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
-  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 8080, "ToPort": 8080, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow Backend 8080"}]}]'
+  --ip-permissions '[{"IpProtocol": "udp", "FromPort": 8080, "ToPort": 8080, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow 8080 UDP"}]}]'
 
 ## Añadirle etiqueta al grupo de seguridad
 echo "Añadiendo etiqueta al grupo de seguridad Ubuntu Server..."
@@ -174,14 +147,14 @@ echo "Creando instancia EC2 Ubuntu  ##################################"
 AWS_AMI_Ubuntu_ID=ami-04b70fa74e45c3917
 AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
   --image-id $AWS_AMI_Ubuntu_ID \
-  --instance-type t3.large \
-  --key-name pielsana-key
+  --instance-type t2.micro \
+  --key-name vockey \
   --monitoring "Enabled=false" \
   --security-group-ids $AWS_ID_GrupoSeguridad_Ubuntu \
   --subnet-id $AWS_ID_SubredPublica \
-  --user-data file://backend/datosusuarioUbuntu.txt \
+  --user-data file://dockerUbuntu.txt \
   --private-ip-address $AWS_IP_UbuntuServer \
-  --tag-specifications ResourceType=instance,Tags=[{Key=Name,Value=$AWS_Proyecto-us}] \
+  --tag-specifications ResourceType=instance,Tags=[{Key=Name,Value=pielsanaia}] \
   --query 'Instances[0].InstanceId' \
   --output text)
 
@@ -207,7 +180,7 @@ echo "Esperando a que la instancia esté disponible para asociar la IP elastica"
 sleep 100
 aws ec2 associate-address --instance-id $AWS_EC2_INSTANCE_ID --allocation-id $AWS_IP_Fija_UbuntuServer_AllocationId
 
-
+###############################################################################
 ## Mostrar las ips publicas de las instancias
 echo "Mostrando las ips publicas de las instancias"
 AWS_EC2_INSTANCE_PUBLIC_IP=$(aws ec2 describe-instances \

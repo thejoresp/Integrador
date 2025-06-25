@@ -161,7 +161,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 python main.py
 ```
-La API estará disponible en http://localhost:8080
+La API estará disponible en http://localhost:80
 
 ### Frontend
 
@@ -189,10 +189,10 @@ sudo docker build -t pielsana-backend -f backend/Dockerfile .
 ### Ejecutar el contenedor
 
 ```bash
-sudo docker run -p 8080:8080 pielsana-backend
+sudo docker run -p 80:80 pielsana-backend
 ```
 
-- El backend estará disponible en http://localhost:8080
+- El backend estará disponible en http://localhost:80
 - Si necesitas montar modelos grandes, asegúrate de que estén presentes en la carpeta backend/modelos/ antes de construir la imagen.
 
 ---
@@ -203,7 +203,7 @@ En algunas distribuciones de Linux (como Ubuntu en EC2), puede que necesites usa
 
 ```bash
 sudo docker build -t pielsana-backend -f backend/Dockerfile .
-sudo docker run -p 8080:8080 pielsana-backend
+sudo docker run -p 80:80 pielsana-backend
 ```
 
 Si prefieres evitar usar `sudo` cada vez, puedes agregar tu usuario al grupo `docker`:
