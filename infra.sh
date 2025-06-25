@@ -157,6 +157,10 @@ aws ec2 authorize-security-group-ingress \
   --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
   --ip-permissions '[{"IpProtocol": "UDP", "FromPort": 53, "ToPort": 53, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow DNS(UDP)"}]}]'
 
+aws ec2 authorize-security-group-ingress \
+  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
+  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 8080, "ToPort": 8080, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow Backend 8080"}]}]'
+
 ## Añadirle etiqueta al grupo de seguridad
 echo "Añadiendo etiqueta al grupo de seguridad Ubuntu Server..."
 aws ec2 create-tags \
@@ -170,12 +174,12 @@ echo "Creando instancia EC2 Ubuntu  ##################################"
 AWS_AMI_Ubuntu_ID=ami-04b70fa74e45c3917
 AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
   --image-id $AWS_AMI_Ubuntu_ID \
-  --instance-type t2.micro \
+  --instance-type t3.large \
   --key-name vockey \
   --monitoring "Enabled=false" \
   --security-group-ids $AWS_ID_GrupoSeguridad_Ubuntu \
   --subnet-id $AWS_ID_SubredPublica \
-  --user-data file://datosusuarioUbuntu.txt \
+  --user-data file://backend/datosusuarioUbuntu.txt \
   --private-ip-address $AWS_IP_UbuntuServer \
   --tag-specifications ResourceType=instance,Tags=[{Key=Name,Value=$AWS_Proyecto-us}] \
   --query 'Instances[0].InstanceId' \
@@ -204,10 +208,6 @@ sleep 100
 aws ec2 associate-address --instance-id $AWS_EC2_INSTANCE_ID --allocation-id $AWS_IP_Fija_UbuntuServer_AllocationId
 
 
-
-###############################################################################
-###############################################################################
-###############################################################################
 ## Mostrar las ips publicas de las instancias
 echo "Mostrando las ips publicas de las instancias"
 AWS_EC2_INSTANCE_PUBLIC_IP=$(aws ec2 describe-instances \
