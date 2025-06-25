@@ -7,7 +7,7 @@
 AWS_VPC_CIDR_BLOCK=10.22.0.0/16
 AWS_Subred_CIDR_BLOCK=10.22.115.0/24
 AWS_IP_UbuntuServer=10.22.115.100
-AWS_Proyecto=SRI15
+AWS_Proyecto=PielSanaIA
 
 echo "######################################################################"
 echo "Creación de una VPC, subredes, internet gateway y tabla de rutas."
