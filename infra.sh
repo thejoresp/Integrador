@@ -13,7 +13,6 @@ echo "######################################################################"
 echo "Creación de una VPC, subredes, internet gateway y tabla de rutas."
 echo "Además creará una instancia EC2 Ubuntu Server 22.04 con IPs elásticas en AWS con AWS CLI"
 echo "Se van a crear con los siguientes valores:"
-echo "Alumno:                " $NN
 echo "AWS_VPC_CIDR_BLOCK:    " $AWS_VPC_CIDR_BLOCK
 echo "AWS_Subred_CIDR_BLOCK: " $AWS_Subred_CIDR_BLOCK
 echo "AWS_IP_UbuntuServer:   " $AWS_IP_UbuntuServer
@@ -125,6 +124,21 @@ AWS_ID_GrupoSeguridad_Ubuntu=$(aws ec2 create-security-group \
 echo "ID Grupo de seguridad de ubuntu: " $AWS_ID_GrupoSeguridad_Ubuntu
 
 echo "Añadiendo reglas de seguridad al grupo de seguridad Ubuntu Server..."
+aws ec2 authorize-security-group-ingress \
+  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
+  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow SSH"}]}]'
+
+aws ec2 authorize-security-group-ingress \
+  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
+  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow HTTP"}]}]'
+
+aws ec2 authorize-security-group-ingress \
+  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
+  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 53, "ToPort": 53, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow DNS(TCP)"}]}]'
+
+aws ec2 authorize-security-group-ingress \
+  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
+  --ip-permissions '[{"IpProtocol": "UDP", "FromPort": 53, "ToPort": 53, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow DNS(UDP)"}]}]'
 # Permitir tráfico HTTP en el puerto 8080 (TCP)
 aws ec2 authorize-security-group-ingress \
   --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
