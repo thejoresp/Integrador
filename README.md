@@ -215,6 +215,41 @@ Luego cierra y vuelve a abrir la sesión para que los cambios tengan efecto.
 
 ---
 
+
+## Exponer el backend con ngrok
+
+### Instrucciones para usar ngrok en EC2 (complemento, no reemplaza Docker)
+
+
+2. **Instala y ejecuta ngrok en tu instancia EC2**
+   ```bash
+   wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
+   tar -xvzf ngrok-v3-stable-linux-amd64.tgz
+   sudo mv ngrok /usr/local/bin
+   ngrok http 8080
+   ```
+   (Opcional: agrega tu authtoken si tienes cuenta en ngrok)
+
+3. **Copia la URL HTTPS que te da ngrok**
+   (por ejemplo, `https://abcd1234.ngrok.io`)
+
+4. **Entra a Vercel y cambia la variable de entorno `VITE_API_URL`**
+   Pon la URL de ngrok y vuelve a desplegar el frontend.
+
+5. **¡Listo!**
+   Tu frontend en Vercel podrá comunicarse con el backend por HTTPS sin problemas de mixed-content.
+
+> Recuerda: cada vez que reinicies ngrok, la URL cambiará y deberás actualizarla en Vercel.
+
+> **Nota importante:**
+> 
+> El backend de PielSana IA debe estar siempre corriendo (por ejemplo, usando Docker, como se explica en las secciones anteriores).
+> 
+> La sección de ngrok es una opción adicional pensada para exponer temporalmente el backend por HTTPS, facilitando la integración con frontends desplegados en plataformas como Vercel (que requieren HTTPS para evitar problemas de mixed-content).
+> 
+> **ngrok no reemplaza Docker ni la ejecución normal del servidor:** simplemente crea un túnel seguro hacia el backend ya montado en Docker, útil para pruebas, demos o MVP, 
+
+
 ## Ejemplo de Request/Response de la API
 
 **Request:**
@@ -301,3 +336,11 @@ Para consultas o colaboración, contacta a:
   - Melanoma
   - Lúnar Común (Nevus)
   - Lesión Vascular
+
+> **Nota importante:**
+> 
+> El backend de PielSana IA debe estar siempre corriendo (por ejemplo, usando Docker, como se explica en las secciones anteriores).
+> 
+> La sección de ngrok es una opción adicional pensada para exponer temporalmente el backend por HTTPS, facilitando la integración con frontends desplegados en plataformas como Vercel (que requieren HTTPS para evitar problemas de mixed-content).
+> 
+> **ngrok no reemplaza Docker ni la ejecución normal del servidor:** simplemente crea un túnel seguro hacia el backend ya montado en Docker, útil para pruebas, demos o MVP, pero no para producción.
