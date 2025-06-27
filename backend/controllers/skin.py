@@ -147,7 +147,7 @@ conditions_data = {
 # Almacenamiento en memoria para resultados de lunares
 lunares_results = {}
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("/")
 async def get_upload_page(request: Request):
     """Sirve la página principal para cargar imágenes."""
     raise HTTPException(status_code=404, detail="No implementado: la vista HTML es manejada por el frontend.")
@@ -171,7 +171,7 @@ async def handle_image_upload(request: Request, file: UploadFile = File(...)):
         print(f"Error crítico al procesar la imagen: {e}")
         raise HTTPException(status_code=500, detail=f"Error crítico al procesar la imagen: {str(e)}")
 
-@router.get("/results", response_class=HTMLResponse)
+@router.get("/results")
 async def get_results_page(request: Request, image_name: str = None, analysis_status: str = None):
     """Sirve la página de resultados."""
     raise HTTPException(status_code=404, detail="No implementado: la vista HTML es manejada por el frontend.")
