@@ -26,7 +26,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",            # Para desarrollo local
         "http://127.0.0.1:5173",
-        "https://pielsana-ia.vercel.app"
+        "https://pielsana-ia.vercel.app",
     ],
     allow_origin_regex="https://.*\\.ngrok-free\\.app",
     allow_credentials=True,
