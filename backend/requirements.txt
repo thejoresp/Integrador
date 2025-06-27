@@ -1,6 +1,5 @@
 fastapi
 uvicorn
-jinja2
 transformers
 Pillow
 tensorflow==2.19.0

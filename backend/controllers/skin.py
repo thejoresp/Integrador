@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Request, File, UploadFile, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
-import shutil
+from fastapi.responses import RedirectResponse
 from pathlib import Path
 import asyncio
 import uuid
@@ -12,9 +10,6 @@ from backend.models.condition import ConditionInfo
 
 # Configurar el router
 router = APIRouter()
-
-# Plantillas
-templates = Jinja2Templates(directory="backend/templates")
 
 # Diccionario de condiciones (temporal, normalmente iría en un archivo aparte)
 conditions_data = {
@@ -155,7 +150,7 @@ lunares_results = {}
 @router.get("/", response_class=HTMLResponse)
 async def get_upload_page(request: Request):
     """Sirve la página principal para cargar imágenes."""
-    return templates.TemplateResponse("upload.html", {"request": request})
+    raise HTTPException(status_code=404, detail="No implementado: la vista HTML es manejada por el frontend.")
 
 @router.post("/upload")
 async def handle_image_upload(request: Request, file: UploadFile = File(...)):
@@ -168,38 +163,18 @@ async def handle_image_upload(request: Request, file: UploadFile = File(...)):
             print(f"Predicción para {file.filename}: {pred_label}")
         else:
             print(f"No se pudo predecir la clase para {file.filename}.")
-            return templates.TemplateResponse("upload.html", {
-                "request": request, 
-                "error_message": f"Error al procesar la imagen: No se pudo predecir la clase."
-            }, status_code=500)
-        return RedirectResponse(url=f"/results?image_name={file.filename}&analysis_status=success", status_code=303)
+            raise HTTPException(status_code=500, detail="Error al procesar la imagen: No se pudo predecir la clase.")
+        return {"filename": file.filename, "prediccion": pred_label, "probabilidades": probabilities}
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:
         print(f"Error crítico al procesar la imagen: {e}")
-        return templates.TemplateResponse("upload.html", {
-            "request": request, 
-            "error_message": f"Error crítico al procesar la imagen: {str(e)}"
-        }, status_code=500)
+        raise HTTPException(status_code=500, detail=f"Error crítico al procesar la imagen: {str(e)}")
 
 @router.get("/results", response_class=HTMLResponse)
 async def get_results_page(request: Request, image_name: str = None, analysis_status: str = None):
     """Sirve la página de resultados."""
-    # Aquí, en una aplicación real, obtendrías los resultados del análisis
-    # basados en algún identificador o de una sesión.
-    # Por ahora, solo usamos el image_name y un estado simulado.
-    mock_results = {
-        "image_name": image_name if image_name else "Imagen de ejemplo",
-        "condition": "Análisis en proceso... (simulado)" if analysis_status == "success" else "Análisis fallido (simulado)",
-        "severity": "-",
-        "recommendation": "Los embeddings se han generado y mostrado en consola (simulado)."
-    }
-    if analysis_status == "success" and image_name:
-         mock_results["info"] = f"Los embeddings para {image_name} se generaron (ver consola del servidor)."
-    elif image_name:
-        mock_results["info"] = f"Hubo un problema al generar embeddings para {image_name}."
-
-    return templates.TemplateResponse("results.html", {"request": request, "results": mock_results})
+    raise HTTPException(status_code=404, detail="No implementado: la vista HTML es manejada por el frontend.")
 
 @router.post("/api/analyze", tags=["Skin Analysis API"])
 async def api_analyze_skin(file: UploadFile = File(...)):
