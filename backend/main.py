@@ -23,16 +23,16 @@ app = FastAPI(
 # Habilitar CORS para el frontend en desarrollo y producción
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",            # Para desarrollo local
-        "http://127.0.0.1:5173",
-        "https://pielsana-ia.vercel.app",
-    ],
-    allow_origin_regex=r"https://.*\.ngrok-free\.app",
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+#       "http://localhost:5173",            # Para desarrollo local
+#       "http://127.0.0.1:5173",
+#       "https://pielsana-ia.vercel.app",
+    
 
 # Endpoint de prueba
 @app.get("/")
