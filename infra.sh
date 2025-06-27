@@ -136,6 +136,14 @@ aws ec2 authorize-security-group-ingress \
   --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
   --ip-permissions '[{"IpProtocol": "UDP", "FromPort": 53, "ToPort": 53, "IpRanges": [{"CidrIp": "0.0.0.0/0", "Description": "Allow DNS(UDP)"}]}]'
 
+aws ec2 authorize-security-group-ingress \
+  --group-id $AWS_ID_GrupoSeguridad_Ubuntu \
+  --protocol tcp --port 8080 \
+  --cidr 0.0.0.0/0 \
+  --description "Allow HTTP on port 8080"
+
+
+
 ## Añadirle etiqueta al grupo de seguridad
 echo "Añadiendo etiqueta al grupo de seguridad Ubuntu Server..."
 aws ec2 create-tags \

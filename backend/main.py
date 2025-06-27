@@ -28,7 +28,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "https://pielsana-ia.vercel.app"
     ],
-    allow_origin_regex="https://.*\\.ngrok-free\\.app",
+#  allow_origin_regex="https://.*\\.ngrok-free\\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
