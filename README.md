@@ -123,7 +123,7 @@ PielSana IA combina lo último en inteligencia artificial y desarrollo web para 
 | Frontend     | React, Vite, TypeScript, TailwindCSS       |
 | Backend      | FastAPI, Python, TensorFlow, Keras         |
 | Modelos      | Modelos locales (ej: lunares.keras, otros) |
-| Infraestructura | Docker, GitHub Actions, .env            |
+| Infraestructura | Docker, .env            |
 
 ## Diagrama de Arquitectura
 
