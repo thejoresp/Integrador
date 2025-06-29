@@ -3,20 +3,18 @@
 # Verificar si existe la imagen 'pielsana-backend'
 imagen_id=$(docker images -q pielsana-backend)
 
-construir_imagen=true
-
 if [ -n "$imagen_id" ]; then
   read -p "¿Quieres eliminar la imagen 'pielsana-backend'? (s/N): " respuesta
   if [[ "$respuesta" =~ ^[sS]$ ]]; then
     echo "Eliminando la imagen 'pielsana-backend'..."
     sudo docker rmi -f pielsana-backend
+    echo "Construyendo la imagen Docker del backend..."
+    sudo docker build -t pielsana-backend -f backend/Dockerfile .
   else
-    construir_imagen=false
+    echo "Usando la imagen existente 'pielsana-backend' para crear el contenedor."
   fi
-fi
-
-if [ "$construir_imagen" = true ]; then
-  echo "Construyendo la imagen Docker del backend..."
+else
+  echo "No existe la imagen 'pielsana-backend'. Construyendo..."
   sudo docker build -t pielsana-backend -f backend/Dockerfile .
 fi
 
