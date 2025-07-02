@@ -2,7 +2,7 @@ from PIL import Image
 from io import BytesIO
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import img_to_array
-from backend.config.model_config import LUNARES_MODEL_PATH
+from backend.config.model_config import LUNARES_MODEL_PATH, ACNE_MODEL_PATH
 
 # --- INICIO: Funciones para modelo lunares.keras ---
 LUNARES_MODEL = None
@@ -51,4 +51,52 @@ def predict_lunares_class(image_bytes: bytes):
     except Exception as e:
         print(f"Error al predecir con lunares.keras: {e}")
         return None, None
-# --- FIN: Funciones para modelo lunares.keras --- 
+# --- FIN: Funciones para modelo lunares.keras ---
+
+# --- INICIO: Funciones para modelo acne.keras ---
+ACNE_CLASS_NAMES = ['acne', 'no_acne']
+ACNE_CLASS_LABELS = {
+    'acne': 'Con acné',
+    'no_acne': 'Sin acné'
+}
+ACNE_MODEL = None
+
+def load_acne_model():
+    global ACNE_MODEL
+    if ACNE_MODEL is None:
+        try:
+            print(f"Cargando modelo acne.keras desde {ACNE_MODEL_PATH}...")
+            ACNE_MODEL = tf.keras.models.load_model(ACNE_MODEL_PATH)
+            print("Modelo acne.keras cargado exitosamente.")
+        except Exception as e:
+            print(f"Error cargando el modelo acne.keras: {e}")
+            ACNE_MODEL = None
+    return ACNE_MODEL
+
+def predict_acne_class(image_bytes: bytes):
+    model = load_acne_model()
+    if model is None:
+        print("El modelo acne.keras no está cargado.")
+        return None, None
+    try:
+        img = Image.open(BytesIO(image_bytes))
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        img_resized = img.resize((224, 224))
+        img_array = img_to_array(img_resized)
+        img_array = img_array / 255.0
+        img_array = img_array.reshape((1, 224, 224, 3))
+        preds = model.predict(img_array)
+        # Como es binario, salida sigmoid: 0 = no_acne, 1 = acne
+        pred_idx = int(preds[0][0] > 0.5)
+        pred_class = ACNE_CLASS_NAMES[pred_idx]
+        pred_label = ACNE_CLASS_LABELS[pred_class]
+        probabilities = {
+            ACNE_CLASS_LABELS[ACNE_CLASS_NAMES[1]]: float(preds[0][0]),
+            ACNE_CLASS_LABELS[ACNE_CLASS_NAMES[0]]: float(1 - preds[0][0])
+        }
+        return pred_label, probabilities
+    except Exception as e:
+        print(f"Error al predecir con acne.keras: {e}")
+        return None, None
+# --- FIN: Funciones para modelo acne.keras --- 
