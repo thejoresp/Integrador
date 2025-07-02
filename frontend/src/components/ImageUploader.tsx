@@ -164,7 +164,9 @@ const ImageUploader: React.FC = () => {
   const handleAnalyze = async () => {
     if (!selectedFile) return;
     setIsAnalyzing(true);
-  
+    
+    console.log('Tipo de análisis seleccionado:', analysisType);
+
     const formData = new FormData();
     formData.append('file', selectedFile);
   
@@ -222,6 +224,7 @@ const ImageUploader: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setAnalysisType(type.key);
+                  console.log('Seleccionado:', type.key);
                   setShowConsent(true);
                   setConsentAccepted(false);
                 }}

@@ -10,4 +10,5 @@ echo "Construyendo la imagen Docker del backend..."
 sudo docker build -t pielsana-backend -f backend/Dockerfile .
 
 echo "Ejecutando el backend en Docker..."
-sudo docker run -d --rm --name pielsana-backend -p 8080:8080 pielsana-backend 
+# sudo docker run -d --rm --name pielsana-backend -p 8080:8080 pielsana-backend 
+sudo docker run -d --name pielsana-backend -p 8080:8080 pielsana-backend 

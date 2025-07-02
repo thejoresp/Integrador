@@ -38,13 +38,13 @@ const Results: React.FC = () => {
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 py-6 px-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-white">Resultados del Análisis</h1>
+            <h1 className="text-2xl font-bold text-white">Resultados del Análisis de Lunares</h1>
             <div className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm">
               ID: {id}
             </div>
           </div>
           <p className="text-blue-100 mt-2">
-            Estos resultados son indicativos y no reemplazan la opinión de un profesional.
+            Estos resultados de <span className="font-bold">lunares</span> son indicativos y no reemplazan la opinión de un profesional.
           </p>
         </div>
         <div className="p-6">
@@ -55,7 +55,7 @@ const Results: React.FC = () => {
               </pre>
               {analysis.prediccion && (
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-2 text-blue-800">Predicción:</h2>
+                  <h2 className="text-lg font-semibold mb-2 text-blue-800">Predicción de Lunares:</h2>
                   <div className="bg-blue-50 border border-blue-200 rounded p-4 text-xs text-blue-900 overflow-x-auto">
                     {analysis.prediccion}
                   </div>
@@ -67,7 +67,7 @@ const Results: React.FC = () => {
           <div className="flex items-start space-x-2 mb-6">
             <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
             <p className="text-gray-600 text-sm">
-              <span className="font-medium">Nota importante:</span> Este análisis es preliminar y no constituye un diagnóstico médico. 
+              <span className="font-medium">Nota importante:</span> Este análisis de <span className="font-bold">lunares</span> es preliminar y no constituye un diagnóstico médico. 
               Siempre consulta con un dermatólogo para una evaluación profesional.
             </p>
           </div>
