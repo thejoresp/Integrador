@@ -5,7 +5,7 @@ import asyncio
 import uuid
 
 # Importar el servicio de análisis de piel
-from backend.services.skin_analysis_service import predict_lunares_class
+from backend.services.skin_analysis_service import predict_lunares_class, predict_acne_class
 from backend.models.condition import ConditionInfo
 
 # Configurar el router
@@ -232,4 +232,24 @@ async def get_condition_info(condition_name: str):
     condition = conditions_data.get(condition_name.lower())
     if not condition:
         raise HTTPException(status_code=404, detail="Condición no encontrada")
-    return condition 
+    return condition
+
+@router.post("/api/analyze-acne", tags=["Skin Analysis API"])
+async def api_analyze_acne(file: UploadFile = File(...)):
+    if not file.content_type or not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="El archivo debe ser una imagen.")
+    try:
+        image_bytes = await file.read()
+        pred_label, probabilities = predict_acne_class(image_bytes)
+        if pred_label is not None:
+            return {
+                "filename": file.filename,
+                "content_type": file.content_type,
+                "prediccion": pred_label,
+                "probabilidades": probabilities
+            }
+        else:
+            raise HTTPException(status_code=500, detail="No se pudo predecir la clase para la imagen.")
+    except Exception as e:
+        print(f"Error en API /api/analyze-acne: {e}")
+        raise HTTPException(status_code=500, detail=f"Error interno del servidor al analizar la imagen: {str(e)}") 
