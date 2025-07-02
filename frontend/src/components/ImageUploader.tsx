@@ -170,8 +170,12 @@ const ImageUploader: React.FC = () => {
   
     try {
       let endpoint = `${API_URL}/skin/api/analyze`;
+      let isAcne = false;
       if (analysisType === 'moles') {
         endpoint = `${API_URL}/skin/api/analyze-lunares`;
+      } else if (analysisType === 'acne') {
+        endpoint = `${API_URL}/skin/api/analyze-acne`;
+        isAcne = true;
       }
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -179,7 +183,11 @@ const ImageUploader: React.FC = () => {
       });
       if (!response.ok) throw new Error('Error en el análisis');
       const data = await response.json();
-      navigate(`/results/${data.id || data.filename}`);
+      if (isAcne) {
+        navigate(`/results-acne`, { state: { analysis: data } });
+      } else {
+        navigate(`/results/${data.id || data.filename}`);
+      }
     } catch {
       alert('Error al analizar la imagen');
     } finally {
