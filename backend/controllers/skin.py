@@ -294,7 +294,7 @@ async def analizar_imagen_openai(file: UploadFile = File(...)):
 
     prompt = (
         "Analiza la imagen de piel que te envío. "
-        "Dime qué tipo de afección ves (acné, lunares, rosácea, mancha solar, etc.). Que inicie con mayuscula "
+        "Dime qué tipo de afección ves (acné, lunares, rosácea, mancha solar, etc.). Que inicie con mayusculash "
         "Dame una breve descripción educativa de la afección detectada. "
         "Dame también 5 recomendaciones para esa afección. "
         "Responde en formato JSON con los campos 'afeccion', 'descripcion' y 'recomendaciones' (lista de strings)."
