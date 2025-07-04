@@ -173,11 +173,15 @@ const ImageUploader: React.FC = () => {
     try {
       let endpoint = `${API_URL}/skin/api/analyze`;
       let isAcne = false;
+      let isRosacea = false;
       if (analysisType === 'moles') {
         endpoint = `${API_URL}/skin/api/analyze-lunares`;
       } else if (analysisType === 'acne') {
         endpoint = `${API_URL}/skin/api/analyze-acne`;
         isAcne = true;
+      } else if (analysisType === 'rosacea') {
+        endpoint = `${API_URL}/skin/api/analyze-rosacea`;
+        isRosacea = true;
       }
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -187,6 +191,8 @@ const ImageUploader: React.FC = () => {
       const data = await response.json();
       if (isAcne) {
         navigate(`/results-acne`, { state: { analysis: data } });
+      } else if (isRosacea) {
+        navigate(`/results-rosacea`, { state: { analysis: data } });
       } else {
         navigate(`/results/${data.id || data.filename}`);
       }

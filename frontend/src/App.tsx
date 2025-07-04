@@ -6,6 +6,7 @@ import ResultsLunares from './pages/ResultsLunares';
 import ConditionInfo from './pages/ConditionInfo';
 import About from './pages/About';
 import ResultsAcne from './pages/ResultsAcne';
+import ResultsRosacea from './pages/ResultsRosacea';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="results" element={<ResultsLunares />} />
         <Route path="results/:id" element={<ResultsLunares />} />
         <Route path="results-acne" element={<ResultsAcne />} />
+        <Route path="results-rosacea" element={<ResultsRosacea />} />
         <Route path="conditions/:condition" element={<ConditionInfo />} />
         <Route path="about" element={<About />} />
       </Route>

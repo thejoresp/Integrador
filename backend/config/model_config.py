@@ -18,6 +18,11 @@ ACNE_MODEL_PATH = os.getenv(
     os.path.join(BASE_DIR, "backend", "modelos", "acne", "acne.keras")
 )
 
+ROSACEA_MODEL_PATH = os.getenv(
+    "ROSACEA_MODEL_PATH",
+    os.path.join(BASE_DIR, "backend", "modelos", "rosacea", "rosacea.keras")
+)
+
 # Configuración de TensorFlow
 import tensorflow as tf
 tf.config.set_visible_devices([], 'GPU')  # Forzar uso de CPU
@@ -26,4 +31,5 @@ tf.config.threading.set_intra_op_parallelism_threads(4)  # Ajustar según tu CPU
 
 # Crear directorios necesarios para modelos locales
 os.makedirs(os.path.dirname(LUNARES_MODEL_PATH), exist_ok=True)
-os.makedirs(os.path.dirname(ACNE_MODEL_PATH), exist_ok=True) 
+os.makedirs(os.path.dirname(ACNE_MODEL_PATH), exist_ok=True)
+os.makedirs(os.path.dirname(ROSACEA_MODEL_PATH), exist_ok=True) 
