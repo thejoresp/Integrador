@@ -33,7 +33,7 @@ const ConsentModal: React.FC<{ onAccept: () => void; onClose: () => void }> = ({
             </ul>
             <h4 className="font-semibold mt-4 mb-2">Tus derechos</h4>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Puedes solicitar acceso, rectificación, actualización, cancelación u oposición al tratamiento de tus datos escribiendo a <a href="mailto:contacto@pielsanaia.com">contacto@pielsanaia.com</a>.</li>
+              <li>Puedes solicitar acceso, rectificación, actualización, cancelación u oposición al tratamiento de tus datos escribiendo a <a href="mailto:contacto@pielsanaia.click">contacto@pielsanaia.click</a>.</li>
             </ul>
             <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
               <p className="font-medium text-gray-700 dark:text-gray-200">
@@ -88,16 +88,16 @@ const analysisTypes = [
     description: 'Identificación de enrojecimiento y vasos sanguíneos.',
   },
   {
-    key: 'sunspots',
-    label: 'Manchas Solares',
-    image: 'https://images.pexels.com/photos/7479603/pexels-photo-7479603.jpeg?auto=compress&w=400',
-    description: 'Evaluación de hiperpigmentaciones solares.',
-  },
-  {
     key: 'moles',
     label: 'Lunares',
     image: 'https://images.pexels.com/photos/1115128/pexels-photo-1115128.jpeg?auto=compress&w=400',
     description: 'Análisis de lunares y lesiones atípicas.',
+  },
+  {
+    key: 'openai',
+    label: 'Detectar Condición',
+    image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&w=400',
+    description: 'Analiza tu imagen con IA avanzada y detecta automáticamente el tipo de problema de piel.',
   }
 ];
 
@@ -174,6 +174,7 @@ const ImageUploader: React.FC = () => {
       let endpoint = `${API_URL}/skin/api/analyze`;
       let isAcne = false;
       let isRosacea = false;
+      let isOpenAI = false;
       if (analysisType === 'moles') {
         endpoint = `${API_URL}/skin/api/analyze-lunares`;
       } else if (analysisType === 'acne') {
@@ -182,6 +183,9 @@ const ImageUploader: React.FC = () => {
       } else if (analysisType === 'rosacea') {
         endpoint = `${API_URL}/skin/api/analyze-rosacea`;
         isRosacea = true;
+      } else if (analysisType === 'openai') {
+        endpoint = `${API_URL}/skin/openai-analizar`;
+        isOpenAI = true;
       }
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -193,6 +197,8 @@ const ImageUploader: React.FC = () => {
         navigate(`/results-acne`, { state: { analysis: data } });
       } else if (isRosacea) {
         navigate(`/results-rosacea`, { state: { analysis: data } });
+      } else if (isOpenAI) {
+        navigate(`/results-openai`, { state: { analysis: data } });
       } else {
         navigate(`/results/${data.id || data.filename}`);
       }
@@ -215,9 +221,9 @@ const ImageUploader: React.FC = () => {
         />
       )}
       
-      <div className="flex items-center text-blue-600 mb-4">
+      <div className="flex items-center text-blue-600 mb-4 justify-center">
         <ImageIcon className="h-6 w-6 mr-2" />
-        <h2 className="text-xl font-semibold">Análisis de Imagen</h2>
+        <h2 className="text-xl font-semibold text-center">Análisis de Imagen</h2>
       </div>
       
       {!image && (
@@ -248,7 +254,6 @@ const ImageUploader: React.FC = () => {
                 <div className="p-6 flex-1 flex flex-col w-full">
                   <span className="text-blue-700 font-semibold text-lg mb-1 dark:text-blue-300">{type.label}</span>
                   <span className="text-gray-600 dark:text-gray-300 text-sm mb-2 flex-1">{type.description}</span>
-                  <span className={`mt-2 text-xs font-medium ${analysisType === type.key ? 'text-blue-600 dark:text-blue-300' : 'text-gray-400 dark:text-gray-400'}`}>{analysisType === type.key ? 'Seleccionado' : 'Seleccionar'}</span>
                 </div>
               </button>
             ))}

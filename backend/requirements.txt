@@ -6,3 +6,4 @@ tensorflow==2.19.0
 python-multipart
 python-dotenv
 pydantic==1.10.15
+openai

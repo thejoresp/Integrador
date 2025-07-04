@@ -3,6 +3,12 @@ from fastapi.responses import RedirectResponse
 from pathlib import Path
 import asyncio
 import uuid
+import openai
+import base64
+import os
+import re
+import json
+from pydantic import BaseModel
 
 # Importar el servicio de análisis de piel
 from backend.services.skin_analysis_service import predict_lunares_class, predict_acne_class, predict_rosacea_class
@@ -10,6 +16,9 @@ from backend.models.condition import ConditionInfo
 
 # Configurar el router
 router = APIRouter()
+
+# Crear un nuevo router para OpenAI
+openai_router = APIRouter()
 
 # Diccionario de condiciones (temporal, normalmente iría en un archivo aparte)
 conditions_data = {
@@ -147,6 +156,9 @@ conditions_data = {
 # Almacenamiento en memoria para resultados de lunares
 lunares_results = {}
 
+class PrediccionRequest(BaseModel):
+    prediccion: str
+
 @router.get("/")
 async def get_upload_page(request: Request):
     """Sirve la página principal para cargar imágenes."""
@@ -272,4 +284,80 @@ async def api_analyze_rosacea(file: UploadFile = File(...)):
             raise HTTPException(status_code=500, detail="No se pudo predecir la clase para la imagen.")
     except Exception as e:
         print(f"Error en API /api/analyze-rosacea: {e}")
-        raise HTTPException(status_code=500, detail=f"Error interno del servidor al analizar la imagen: {str(e)}") 
+        raise HTTPException(status_code=500, detail=f"Error interno del servidor al analizar la imagen: {str(e)}")
+
+@openai_router.post("/openai-analizar")
+async def analizar_imagen_openai(file: UploadFile = File(...)):
+    image_bytes = await file.read()
+    image_base64 = base64.b64encode(image_bytes).decode("utf-8")
+    image_data_url = f"data:{file.content_type};base64,{image_base64}"
+
+    prompt = (
+        "Analiza la imagen de piel que te envío. "
+        "Dime qué tipo de afección ves (acné, lunares, rosácea, mancha solar, etc.). Que inicie con mayuscula "
+        "Dame una breve descripción educativa de la afección detectada. "
+        "Dame también 5 recomendaciones para esa afección. "
+        "Responde en formato JSON con los campos 'afeccion', 'descripcion' y 'recomendaciones' (lista de strings)."
+    )
+
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    print("API KEY:", openai_api_key)
+    print("Tamaño de la imagen:", len(image_bytes))
+    openai.api_key = openai_api_key
+    response = openai.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "Eres un dermatólogo experto."},
+            {"role": "user", "content": [
+                {"type": "text", "text": prompt},
+                {"type": "image_url", "image_url": {"url": image_data_url}}
+            ]}
+        ],
+        max_tokens=500
+    )
+    print("Respuesta de OpenAI:", response.choices[0].message.content)
+
+    content = response.choices[0].message.content
+    # Limpia los bloques de código si existen
+    content = re.sub(r"^```json|^```|```$", "", content.strip(), flags=re.MULTILINE).strip()
+    try:
+        resultado = json.loads(content)
+    except Exception:
+        resultado = {
+            "afeccion": "No se pudo analizar",
+            "recomendaciones": ["Intenta con otra imagen o consulta a un dermatólogo."]
+        }
+    return resultado
+
+@openai_router.post("/openai-recomendaciones")
+async def obtener_recomendaciones_openai(request: PrediccionRequest):
+    import openai
+    import os
+    import json
+    import re
+    prediccion = request.prediccion
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    openai.api_key = openai_api_key
+    prompt = (
+        f"Tengo un paciente con la siguiente condición dermatológica: '{prediccion}'. "
+        "Dame una breve descripción educativa de la condición detectada y 5 recomendaciones para el paciente. "
+        "Responde en formato JSON con los campos 'descripcion' (string) y 'recomendaciones' (lista de strings)."
+    )
+    response = openai.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "Eres un dermatólogo experto."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=500
+    )
+    content = response.choices[0].message.content
+    content = re.sub(r"^```json|^```|```$", "", content.strip(), flags=re.MULTILINE).strip()
+    try:
+        resultado = json.loads(content)
+    except Exception:
+        resultado = {"descripcion": "No se pudo generar la descripción.", "recomendaciones": ["No se pudieron generar recomendaciones. Intenta nuevamente."]}
+    return resultado
+
+# Registrar el router de OpenAI en el router principal
+router.include_router(openai_router) 

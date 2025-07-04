@@ -1,37 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { ArrowLeft, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, AlertCircle, Thermometer, Sun, Crosshair, CheckCircle } from 'lucide-react';
 
-const acneDescription = 'El acné es una enfermedad de la piel que ocurre cuando los folículos pilosos se tapan con grasa y células muertas de la piel. A menudo causa puntos blancos, puntos negros o granos, y suele aparecer en el rostro, la frente, el pecho, la parte superior de la espalda y los hombros.';
+const conditionMap: Record<string, { icon: JSX.Element; color: string; description: string }> = {
+  'acné': {
+    icon: <AlertCircle className="h-10 w-10 text-pink-500" />, color: 'bg-pink-100',
+    description: 'El acné es una condición común causada por la obstrucción de los folículos pilosos con grasa y células muertas.'
+  },
+  'rosácea': {
+    icon: <Thermometer className="h-10 w-10 text-red-500" />, color: 'bg-red-100',
+    description: 'La rosácea es una afección crónica que causa enrojecimiento y vasos sanguíneos visibles en la cara.'
+  },
+  'mancha solar': {
+    icon: <Sun className="h-10 w-10 text-yellow-500" />, color: 'bg-yellow-100',
+    description: 'Las manchas solares son áreas de la piel que se oscurecen debido a la exposición al sol.'
+  },
+  'lunares': {
+    icon: <Crosshair className="h-10 w-10 text-blue-500" />, color: 'bg-blue-100',
+    description: 'Los lunares son áreas pequeñas de pigmentación en la piel. La mayoría son inofensivos, pero es importante monitorearlos.'
+  }
+};
 
-const ResultsAcne: React.FC = () => {
+const ResultsOpenAI: React.FC = () => {
   const location = useLocation();
   const analysis = location.state?.analysis;
-  const [recomendaciones, setRecomendaciones] = useState<string[]>([]);
-  const [loadingRec, setLoadingRec] = useState(false);
-  const [descripcion, setDescripcion] = useState<string>("");
-  const API_URL = import.meta.env.VITE_API_URL;
-
-  useEffect(() => {
-    if (analysis?.prediccion) {
-      setLoadingRec(true);
-      fetch(`${API_URL}/skin/openai-recomendaciones`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prediccion: analysis.prediccion })
-      })
-        .then(res => res.json())
-        .then(data => {
-          setRecomendaciones(data.recomendaciones || []);
-          setDescripcion(data.descripcion || "");
-        })
-        .catch(() => {
-          setRecomendaciones([]);
-          setDescripcion("");
-        })
-        .finally(() => setLoadingRec(false));
-    }
-  }, [analysis, API_URL]);
+  const afeccion = analysis?.afeccion?.toLowerCase?.() || '';
+  const condition = conditionMap[afeccion];
+  const descripcion = analysis?.descripcion || condition?.description;
 
   if (!analysis) {
     return (
@@ -51,21 +46,24 @@ const ResultsAcne: React.FC = () => {
       <div className="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden">
         <div className="bg-blue-600 dark:bg-blue-700 py-6 px-6 rounded-t-lg shadow-xl border-2 border-blue-400 dark:border-blue-700">
           <div className="flex items-center space-x-4">
-            <AlertCircle className="h-10 w-10 text-pink-500" />
-            <h1 className="text-3xl font-bold text-white animate-fade-in">Afección detectada: {analysis.prediccion}</h1>
+            {condition?.icon}
+            <h1 className="text-3xl font-bold text-white animate-fade-in">{analysis.afeccion ? `Afección detectada: ${analysis.afeccion}` : 'Resultados del Análisis de Piel (IA Avanzada)'}</h1>
           </div>
+          {!condition && (
+            <p className="text-blue-100 mt-2">Este resultado es orientativo y no reemplaza la opinión de un profesional.</p>
+          )}
         </div>
         <div className="p-6 bg-gray-50 dark:bg-gray-800">
           {descripcion && (
-            <div className="mb-6 rounded-lg p-6 bg-pink-100 dark:bg-pink-900/80 border border-pink-300 dark:border-pink-600 shadow-lg animate-fade-in">
-              <p className="text-gray-700 dark:text-pink-100 text-base">{descripcion}</p>
+            <div className={`mb-6 rounded-lg p-6 ${condition?.color || 'bg-blue-50'} dark:bg-blue-900/80 border border-blue-300 dark:border-blue-600 shadow-lg animate-fade-in`}>
+              <p className="text-gray-700 dark:text-blue-100 text-base">{descripcion}</p>
             </div>
           )}
-          {recomendaciones.length > 0 && (
+          {Array.isArray(analysis.recomendaciones) && analysis.recomendaciones.length > 0 && (
             <div className="mb-8">
               <h2 className="text-lg font-semibold mb-4 text-blue-800 dark:text-blue-300">Recomendaciones</h2>
               <div className="grid gap-4 md:grid-cols-2">
-                {recomendaciones.map((rec, idx) => (
+                {analysis.recomendaciones.map((rec: string, idx: number) => (
                   <div key={idx} className="flex items-start bg-green-50 dark:bg-green-900 border-l-4 border-green-400 dark:border-green-500 rounded-lg p-4 shadow-sm animate-fade-in">
                     <CheckCircle className="h-6 w-6 text-green-500 dark:text-green-300 mr-3 mt-1" />
                     <span className="text-gray-800 dark:text-green-100 text-base">{rec}</span>
@@ -107,4 +105,4 @@ const ResultsAcne: React.FC = () => {
   );
 };
 
-export default ResultsAcne; 
+export default ResultsOpenAI; 

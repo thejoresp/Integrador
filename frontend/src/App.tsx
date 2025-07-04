@@ -7,6 +7,7 @@ import ConditionInfo from './pages/ConditionInfo';
 import About from './pages/About';
 import ResultsAcne from './pages/ResultsAcne';
 import ResultsRosacea from './pages/ResultsRosacea';
+import ResultsOpenAI from './pages/ResultsOpenAI';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="results/:id" element={<ResultsLunares />} />
         <Route path="results-acne" element={<ResultsAcne />} />
         <Route path="results-rosacea" element={<ResultsRosacea />} />
+        <Route path="results-openai" element={<ResultsOpenAI />} />
         <Route path="conditions/:condition" element={<ConditionInfo />} />
         <Route path="about" element={<About />} />
       </Route>

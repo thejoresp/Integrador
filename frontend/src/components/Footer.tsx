@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
             <ul className="mt-4 space-y-2">
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-gray-400 mr-2" />
-                <span>contacto@pielsanaia.com</span>
+                <span>contacto@pielsanaia.click</span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 text-gray-400 mr-2" />
