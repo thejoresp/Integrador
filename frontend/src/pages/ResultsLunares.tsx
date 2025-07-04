@@ -84,7 +84,7 @@ const ResultsLunares: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
+                </div>
           )}
           <div className="flex items-start space-x-2 mb-6 animate-fade-in-slow">
             <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />

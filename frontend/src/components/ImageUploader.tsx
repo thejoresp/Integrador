@@ -166,7 +166,7 @@ const ImageUploader: React.FC = () => {
     setIsAnalyzing(true);
     
     console.log('Tipo de análisis seleccionado:', analysisType);
-
+  
     const formData = new FormData();
     formData.append('file', selectedFile);
   
@@ -200,7 +200,7 @@ const ImageUploader: React.FC = () => {
       } else if (isOpenAI) {
         navigate(`/results-openai`, { state: { analysis: data } });
       } else {
-        navigate(`/results/${data.id || data.filename}`);
+      navigate(`/results/${data.id || data.filename}`);
       }
     } catch {
       alert('Error al analizar la imagen');

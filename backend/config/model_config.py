@@ -30,6 +30,6 @@ tf.config.threading.set_inter_op_parallelism_threads(4)  # Ajustar según tu CPU
 tf.config.threading.set_intra_op_parallelism_threads(4)  # Ajustar según tu CPU
 
 # Crear directorios necesarios para modelos locales
-os.makedirs(os.path.dirname(LUNARES_MODEL_PATH), exist_ok=True)
+os.makedirs(os.path.dirname(LUNARES_MODEL_PATH), exist_ok=True) 
 os.makedirs(os.path.dirname(ACNE_MODEL_PATH), exist_ok=True)
 os.makedirs(os.path.dirname(ROSACEA_MODEL_PATH), exist_ok=True) 

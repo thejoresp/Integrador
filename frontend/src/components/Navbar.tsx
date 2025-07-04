@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
             </Link>
             <a
               href="#contact"
-              className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              className="bg-[#2bb3b8] dark:bg-[#145c5e] text-white hover:bg-[#5fa6a8] dark:hover:bg-[#19787a] hover:text-black px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
               Contacto
             </a>

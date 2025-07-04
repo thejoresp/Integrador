@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
               </li>
               <li className="flex items-center">
                 <Info className="h-5 w-5 text-gray-400 mr-2" />
-                <span>Consulta con un dermatólogo para diagnósticos profesionales</span>
+                <span>Consulte con un dermatólogo para diagnósticos profesionales</span>
               </li>
             </ul>
           </div>

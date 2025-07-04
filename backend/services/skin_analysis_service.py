@@ -51,7 +51,7 @@ def predict_lunares_class(image_bytes: bytes):
     except Exception as e:
         print(f"Error al predecir con lunares.keras: {e}")
         return None, None
-# --- FIN: Funciones para modelo lunares.keras ---
+# --- FIN: Funciones para modelo lunares.keras --- 
 
 # --- INICIO: Funciones para modelo acne.keras ---
 ACNE_CLASS_NAMES = ['acne', 'no_acne']

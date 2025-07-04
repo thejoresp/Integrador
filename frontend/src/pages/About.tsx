@@ -72,35 +72,35 @@ const About: React.FC = () => {
         </div>
       </div>
       
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg overflow-hidden shadow-xl mb-16">
+      <div className="bg-[#2bb3b8] dark:bg-[#19787a] rounded-lg overflow-hidden shadow-xl mb-16">
         <div className="px-6 py-12 sm:px-12">
           <h2 className="text-2xl font-bold text-white mb-8 text-center">Nuestros Valores</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white bg-opacity-10 p-6 rounded-lg backdrop-blur-sm">
+            <div className="bg-[#19787a] dark:bg-[#145c5e] p-6 rounded-lg shadow-lg">
               <Shield className="h-10 w-10 text-white mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Privacidad</h3>
-              <p className="text-blue-100">
+              <p className="text-white">
                 Protegemos tus datos personales y tu información médica con los más altos estándares de seguridad.
               </p>
             </div>
-            <div className="bg-white bg-opacity-10 p-6 rounded-lg backdrop-blur-sm">
+            <div className="bg-[#19787a] dark:bg-[#145c5e] p-6 rounded-lg shadow-lg">
               <Award className="h-10 w-10 text-white mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Calidad</h3>
-              <p className="text-blue-100">
+              <p className="text-white">
                 Nos comprometemos a proporcionar información precisa y actualizada, respaldada por evidencia científica.
               </p>
             </div>
-            <div className="bg-white bg-opacity-10 p-6 rounded-lg backdrop-blur-sm">
+            <div className="bg-[#19787a] dark:bg-[#145c5e] p-6 rounded-lg shadow-lg">
               <BarChart className="h-10 w-10 text-white mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Innovación</h3>
-              <p className="text-blue-100">
+              <p className="text-white">
                 Mejoramos constantemente nuestros algoritmos y servicios para ofrecer la mejor experiencia posible.
               </p>
             </div>
-            <div className="bg-white bg-opacity-10 p-6 rounded-lg backdrop-blur-sm">
+            <div className="bg-[#19787a] dark:bg-[#145c5e] p-6 rounded-lg shadow-lg">
               <Users className="h-10 w-10 text-white mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Accesibilidad</h3>
-              <p className="text-blue-100">
+              <p className="text-white">
                 Creemos que todos merecen acceso a información sobre salud dermatológica, sin barreras.
               </p>
             </div>
